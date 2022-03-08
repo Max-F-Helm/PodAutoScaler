@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: PodAutoScaler
+
+defaults:
+  minPodCount: 1
+  maxPodCount: 9999
