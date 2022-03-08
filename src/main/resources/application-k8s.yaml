@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: PodAutoScaler
+  rabbitmq:
+    host: ${rabbitmq-host}
+    port: ${rabbitmq-port}
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+    virtual-host: /${rabbitmq-vhost}
+
+namespace: ${NAMESPACE}
+
+defaults:
+  minPodCount: 1
+  maxPodCount: 9999

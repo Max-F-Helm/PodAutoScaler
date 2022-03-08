@@ -4,6 +4,8 @@ plugins {
     id("org.springframework.boot") version "2.6.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 
+    id("net.mayope.deployplugin") version "0.0.51"
+
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
 }
@@ -37,6 +39,31 @@ dependencies {
     testImplementation("io.mockk:mockk:1.12.3")
     testImplementation("org.assertj:assertj-core:3.22.0")
     testImplementation("com.ninja-squad:springmockk:3.1.1")
+}
+
+deploy {
+    serviceName = "podautoscaler"
+    default {
+        dockerBuild{
+
+        }
+        dockerLogin {
+            registryRoot = property("registryRoot").toString()
+            loginMethod = net.mayope.deployplugin.tasks.DockerLoginMethod.AWS
+        }
+        dockerPush {
+            registryRoot = property("registryRoot").toString()
+            loginMethod = net.mayope.deployplugin.tasks.DockerLoginMethod.AWS
+        }
+        deploy {
+            targetNamespaces = listOf("integration")
+        }
+        /*helmPush {
+            repositoryUrl = property("helmRepo").toString() ?: ""
+            repositoryUsername = property("helmUser").toString() ?: ""
+            repositoryPassword = property("helmPswd").toString() ?: ""
+        }*/
+    }
 }
 
 tasks {
