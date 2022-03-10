@@ -20,6 +20,7 @@ class ConfigLoaderTest {
         val configString = """
             -
               label: A
+              queueVirtualHost: VH-A
               queueName: Q-A
               podNamespace: NS-A
               pod: P-A
@@ -58,7 +59,7 @@ class ConfigLoaderTest {
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
             add(
-                ScalerConfig("A", "Q-A", "NS-A", "P-A", 10,
+                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A", 10,
                 LimitRuleset("limit", ArrayList<LimitRule>().apply{
                     add(LimitRule(0, 1))
                     add(LimitRule(100, 2))
@@ -66,7 +67,7 @@ class ConfigLoaderTest {
                 }))
             )
             add(
-                ScalerConfig("_unnamed_", "Q-B", "NS-B", "P-B", 60,
+                ScalerConfig("_unnamed_", "/", "Q-B", "NS-B", "P-B", 60,
                 LimitRuleset("limit", ArrayList<LimitRule>().apply{
                     add(LimitRule(0, 1))
                     add(LimitRule(200, 2))
@@ -82,6 +83,7 @@ class ConfigLoaderTest {
         val configString = """
             -
               label: A
+              queueVirtualHost: VH-A
               queueName: Q-A
               podNamespace: NS-A
               pod: P-A
@@ -109,14 +111,14 @@ class ConfigLoaderTest {
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
             add(
-                ScalerConfig("A", "Q-A", "NS-A", "P-A", 10,
+                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A", 10,
                 LinearScaleRuleset("linearScale",
                     LinearScaleRule(0.1, 2, 2, 20)
                 )
             )
             )
             add(
-                ScalerConfig("_unnamed_", "Q-B", "NS-B", "P-B", 60,
+                ScalerConfig("_unnamed_", "/", "Q-B", "NS-B", "P-B", 60,
                 LinearScaleRuleset("linearScale",
                     LinearScaleRule(1.0, 1, 1, 9999)
                 )
