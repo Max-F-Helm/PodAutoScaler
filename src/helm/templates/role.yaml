@@ -4,5 +4,5 @@ metadata:
   name: "{{- include "service.name" . -}}-role"
 rules:
   - apiGroups: ["apps"]
-    resources: ["deployments"]
-    verbs:     ["patch", "get"]
+    resources: ["deployments", "*/scale"]
+    verbs:     ["patch", "update", "get"]
