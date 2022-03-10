@@ -23,6 +23,8 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
 
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("io.fabric8:kubernetes-client:5.12.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
