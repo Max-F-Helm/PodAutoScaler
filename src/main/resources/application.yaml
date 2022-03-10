@@ -2,6 +2,19 @@ spring:
   application:
     name: PodAutoScaler
 
+server:
+  port: 8080
+management:
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics, prometheus
+
 defaults:
   minPodCount: 1
   maxPodCount: 9999

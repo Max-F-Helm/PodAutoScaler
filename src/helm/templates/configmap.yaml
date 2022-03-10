@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "service.fullname" . }}-config
+  labels:
+    {{- include "service.labels" . | nindent 4 }}
+data:
+  {{- (.Files.Glob "config/config.yaml").AsConfig | nindent 2 }}

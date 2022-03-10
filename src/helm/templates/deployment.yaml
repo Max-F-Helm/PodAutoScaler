@@ -1,0 +1,69 @@
+{{- $svcPort := .Values.service.port -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "service.fullname" . }}
+  labels:
+    {{- include "service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "service.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "service.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ include "service.serviceAccountName" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - name: http
+              containerPort: {{ $svcPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.service.livenessCheckPath }}
+              port: http
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            failureThreshold: 100
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.service.readinessCheckPath }}
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 100
+
+          env:
+            - name: spring_profiles_active
+              value: k8s
+            - name: rabbitmq-user
+              value: {{ .Values.rabbitmqUsername }}
+            - name: rabbitmq-password
+              value: {{ .Values.rabbitmqPassword }}
+            - name: rabbitmq-host
+              value: {{ .Values.rabbitmqHost }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: config
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "service.fullname" . }}-config
+                  key: config.yaml
+          #envFrom:
+          #  - secretRef:
+          #      name: {{ .Values.rabbitmqAccessSecret }}

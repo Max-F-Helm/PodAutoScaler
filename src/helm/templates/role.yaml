@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: "{{- include "service.name" . -}}-role"
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs:     ["patch", "get"]
