@@ -2,3 +2,5 @@
 /.idea/
 /.gradle/
 /gradle.properties
+/src/helm/values.yaml
+/src/helm/config/config.yaml
