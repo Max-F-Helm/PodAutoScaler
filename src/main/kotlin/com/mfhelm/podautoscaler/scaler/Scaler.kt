@@ -23,7 +23,7 @@ internal class Scaler(private val messageQueueConnection: MessageQueueConnection
             val newPodCount = config.ruleset.computePodCount(messageCount, currentPodCount)
             if (newPodCount != -1) {
                 kubernetesConnection.setPodCount(config.podNamespace, config.pod, newPodCount)
-                logger.info("${config.label} scaled from $currentPodCount to $newPodCount")
+                logger.info("${config.label} scaled from $currentPodCount to $newPodCount (messageCount: $messageCount)")
             }
         }catch (e: Exception){
             logger.error("exception for ${config.label}", e)
