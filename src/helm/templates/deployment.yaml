@@ -49,10 +49,6 @@ spec:
           env:
             - name: spring_profiles_active
               value: k8s
-            - name: rabbitmq-user
-              value: {{ .Values.rabbitmqUsername }}
-            - name: rabbitmq-password
-              value: {{ .Values.rabbitmqPassword }}
             - name: rabbitmq-host
               value: {{ .Values.rabbitmqHost }}
             - name: NAMESPACE
@@ -64,6 +60,6 @@ spec:
                 configMapKeyRef:
                   name: {{ include "service.fullname" . }}-config
                   key: config.yaml
-          #envFrom:
-          #  - secretRef:
-          #      name: {{ .Values.rabbitmqAccessSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.rabbitmqAccessSecret }}
