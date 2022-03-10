@@ -26,7 +26,7 @@ internal class Scheduler : SchedulingConfigurer{
         configLoader.configEntries.forEach{
             val scaler: Scaler = beanFactory.getBean("Scaler") as Scaler
             scaler.config = it
-            taskRegistrar.addFixedRateTask(scaler, it.interval)
+            taskRegistrar.addFixedRateTask(scaler, it.interval * 1000)
         }
     }
 }
