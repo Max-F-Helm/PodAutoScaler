@@ -17,12 +17,16 @@ internal class Scaler(private val messageQueueConnection: MessageQueueConnection
     private val logger = getLogger(Scaler::class.java)
 
     override fun run(){
-        val messageCount = messageQueueConnection.getQueueMessageCount(config.queueVirtualHost, config.queueName)
-        val currentPodCount = kubernetesConnection.getPodCount(config.podNamespace, config.pod)
-        val newPodCount = config.ruleset.computePodCount(messageCount, currentPodCount)
-        if(newPodCount != -1) {
-            kubernetesConnection.setPodCount(config.podNamespace, config.pod, newPodCount)
-            logger.info("${config.label} scaled from $currentPodCount to $newPodCount")
+        try {
+            val messageCount = messageQueueConnection.getQueueMessageCount(config.queueVirtualHost, config.queueName)
+            val currentPodCount = kubernetesConnection.getPodCount(config.podNamespace, config.pod)
+            val newPodCount = config.ruleset.computePodCount(messageCount, currentPodCount)
+            if (newPodCount != -1) {
+                kubernetesConnection.setPodCount(config.podNamespace, config.pod, newPodCount)
+                logger.info("${config.label} scaled from $currentPodCount to $newPodCount")
+            }
+        }catch (e: Exception){
+            logger.error("exception for ${config.label}", e)
         }
     }
 }
