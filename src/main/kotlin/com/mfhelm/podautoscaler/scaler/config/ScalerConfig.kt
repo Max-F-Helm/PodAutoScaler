@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct
 
 internal data class ScalerConfig(
     internal val label: String,
+    internal val queueVirtualHost: String,
     internal val queueName: String,
     internal val podNamespace: String,
     internal val pod: String,
@@ -43,6 +44,7 @@ internal open class ConfigLoader{
         try {
             return entries.map {
                 val label: String = it.getOrDefault("label", "_unnamed_") as String
+                val queueVirtualHost = it["queueVirtualHost"] as String? ?: "/"
                 val queueName = it["queueName"] as String?
                     ?: throw InvalidConfigException("missing parameter 'queueName'")
                 val podNamespace = it["podNamespace"] as String?
@@ -62,7 +64,7 @@ internal open class ConfigLoader{
                     else -> throw InvalidConfigException("invalid value for 'ruleset.type'")
                 }
 
-                return@map ScalerConfig(label, queueName, podNamespace, pod, interval, rules)
+                return@map ScalerConfig(label, queueVirtualHost, queueName, podNamespace, pod, interval, rules)
             }
         }catch (e: ClassCastException){
             throw InvalidConfigException("parameter-value had wrong type", e)

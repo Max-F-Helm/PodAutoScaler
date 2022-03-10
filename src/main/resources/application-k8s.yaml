@@ -6,7 +6,6 @@ spring:
     port: ${RABBITMQ_SERVICE_PORT_AMQP}
     username: ${rabbitmq-user}
     password: ${rabbitmq-password}
-    virtual-host: /${rabbitmq-vhost}
 
 namespace: ${NAMESPACE}
 

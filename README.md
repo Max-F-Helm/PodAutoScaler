@@ -9,7 +9,8 @@ with the scaling-rules.
 
 ````yaml
 -
-  label: "<label: name for this conf entry (e.g. for logs)>; optional (default is '_unnamed_')"
+  label: "<name for this conf entry (e.g. for logs)>; optional (default is '_unnamed_')"
+  queueVirtualHost: "<path to the virtual host for the queue (including leading slash)>; optional (default is '/')"
   queueName: "<name of the RabbitMQ queue to observe>"
   podNamespace: "<kubernetes namespace>"
   pod: "<name of the deployment to scale>,"

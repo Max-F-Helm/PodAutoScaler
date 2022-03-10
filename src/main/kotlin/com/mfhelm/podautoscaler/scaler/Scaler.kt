@@ -17,7 +17,7 @@ internal class Scaler(private val messageQueueConnection: MessageQueueConnection
     private val logger = getLogger(Scaler::class.java)
 
     override fun run(){
-        val messageCount = messageQueueConnection.getQueueMessageCount(config.queueName)
+        val messageCount = messageQueueConnection.getQueueMessageCount(config.queueVirtualHost, config.queueName)
         val currentPodCount = kubernetesConnection.getPodCount(config.podNamespace, config.pod)
         val newPodCount = config.ruleset.computePodCount(messageCount, currentPodCount)
         if(newPodCount != -1) {
