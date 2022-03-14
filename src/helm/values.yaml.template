@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: <repo-url>
+  pullPolicy: Always
+  version: latest
+
+serviceAccount:
+  create: true
+
+rabbitmqAccessSecret: <secret for RabbitMQ>
+
+rabbitmqHost: <hostname of RabbitMQ-Server>
+
+service:
+  type: NodePort
+  port: 8080
+  livenessCheckPath: /actuator/health/liveness
+  readinessCheckPath: /actuator/health/readiness
+
+ingress:
+  enabled: true
