@@ -11,4 +11,4 @@ namespace: ${NAMESPACE}
 
 defaults:
   minPodCount: 1
-  maxPodCount: 9999
+  maxPodCount: 10

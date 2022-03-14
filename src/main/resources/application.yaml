@@ -26,4 +26,4 @@ management:
 
 defaults:
   minPodCount: 1
-  maxPodCount: 9999
+  maxPodCount: 10
