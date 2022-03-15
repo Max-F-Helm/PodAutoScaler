@@ -64,6 +64,7 @@ internal open class ConfigLoader{
                 val rules: Ruleset = when(rulesType){
                     LimitRuleset.TYPE -> loadLimitRuleset(ruleset)
                     LinearScaleRuleset.TYPE -> loadLinearScaleRuleset(ruleset)
+                    LogarithmicScaleRuleset.TYPE -> loadLogarithmicScaleRuleset(ruleset)
                     else -> throw InvalidConfigException("invalid value for 'ruleset.type'")
                 }
 
@@ -81,7 +82,7 @@ internal open class ConfigLoader{
             val type = data["type"] as String?
                 ?: throw InvalidConfigException("missing parameter 'ruleset.type'")
             if(type != LimitRuleset.TYPE)
-                throw InvalidConfigException("wring type for LimitRuleSet")
+                throw InvalidConfigException("wrong type for LimitRuleSet")
 
             val rules: List<LimitRule>
             val rulesData = data["rules"] as List<Map<String, Any>>?
@@ -97,7 +98,7 @@ internal open class ConfigLoader{
             }
 
             if(rules.isEmpty())
-                throw InvalidConfigException("'ruleset.rules' must contain at least one rule if type = 'limit'")
+                throw InvalidConfigException("'ruleset.rules' must contain at least one rule if type = '${LimitRuleset.TYPE}'")
 
             return LimitRuleset(type, rules)
         }catch (e: ClassCastException){
@@ -112,7 +113,7 @@ internal open class ConfigLoader{
             val type = data["type"] as String?
                 ?: throw InvalidConfigException("missing parameter 'ruleset.type'")
             if(type != LinearScaleRuleset.TYPE)
-                throw InvalidConfigException("wring type for LimitRuleSet")
+                throw InvalidConfigException("wrong type for LinearScaleRuleset")
 
             val rules: List<LinearScaleRule>
 
@@ -130,9 +131,42 @@ internal open class ConfigLoader{
             }
 
             if(rules.size != 1)
-                throw InvalidConfigException("'ruleset.rules' must contain exactly one element if type = 'linearScale'")
+                throw InvalidConfigException("'ruleset.rules' must contain exactly one element if type = '${LinearScaleRuleset.TYPE}'")
 
             return LinearScaleRuleset(type, rules[0])
+        }catch (e: ClassCastException){
+            throw InvalidConfigException("parameter-value had wrong type", e)
+        }catch (e: NullPointerException){
+            throw InvalidConfigException("missing value", e)
+        }
+    }
+
+    private fun loadLogarithmicScaleRuleset(data: Map<String, Any>): LogarithmicScaleRuleset {
+        try{
+            val type = data["type"] as String?
+                ?: throw InvalidConfigException("missing parameter 'ruleset.type'")
+            if(type != LogarithmicScaleRuleset.TYPE)
+                throw InvalidConfigException("wrong type for LogarithmicScaleRuleset")
+
+            val rules: List<LogarithmicScaleRule>
+
+            val rulesData = data["rules"] as List<Map<String, Any>>?
+                ?: throw InvalidConfigException("missing parameter 'ruleset.rules'")
+
+            rules = rulesData.map{
+                val base = (it["base"] as Number?
+                    ?: throw InvalidConfigException("missing parameter 'ruleset.rules.base'")).toDouble()
+                val stepThreshold = (it["stepThreshold"] as Number? ?: 1).toInt()
+                val minPodCount = (it["minPodCount"] as Number? ?: defaultMinPodCount).toInt()
+                val maxPodCount = (it["maxPodCount"] as Number? ?: defaultMaxPodCount).toInt()
+
+                return@map LogarithmicScaleRule(base, stepThreshold, minPodCount, maxPodCount)
+            }
+
+            if(rules.size != 1)
+                throw InvalidConfigException("'ruleset.rules' must contain exactly one element if type = '${LogarithmicScaleRuleset.TYPE}'")
+
+            return LogarithmicScaleRuleset(type, rules[0])
         }catch (e: ClassCastException){
             throw InvalidConfigException("parameter-value had wrong type", e)
         }catch (e: NullPointerException){

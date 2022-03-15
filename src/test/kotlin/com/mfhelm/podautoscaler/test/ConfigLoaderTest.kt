@@ -126,6 +126,56 @@ class ConfigLoaderTest {
         }
         assertEquals(expectedConfig, config)
     }
+
+    @Test
+    fun loadConfigWithLogarithmicScaleRuleset(){
+        val configString = """
+            -
+              label: A
+              queueVirtualHost: VH-A
+              queueName: Q-A
+              podNamespace: NS-A
+              pod: P-A
+              interval: 10
+              ruleset:
+                type: logScale
+                rules:
+                  -
+                    base: 10
+                    stepThreshold: 2
+                    minPodCount: 2
+                    maxPodCount: 20
+            -
+              queueName: Q-B
+              podNamespace: NS-B
+              pod: P-B
+              interval: 60
+              ruleset:
+                type: logScale
+                rules:
+                  -
+                    base: 10
+        """.trimIndent()
+
+        val config = loader.loadConfig(configString)
+        val expectedConfig = ArrayList<ScalerConfig>().apply{
+            add(
+                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A", 10,
+                    LogarithmicScaleRuleset("logScale",
+                        LogarithmicScaleRule(10.0, 2, 2, 20)
+                    )
+                )
+            )
+            add(
+                ScalerConfig("_unnamed_", "/", "Q-B", "NS-B", "P-B", 60,
+                    LogarithmicScaleRuleset("logScale",
+                        LogarithmicScaleRule(10.0, 1, 1, 10)
+                    )
+                )
+            )
+        }
+        assertEquals(expectedConfig, config)
+    }
 }
 
 @Component

@@ -27,6 +27,11 @@ class ScalerTest {
             LinearScaleRule(0.1, 2, 2, 20)
         )
     )
+    private val logarithmicScaleConfig = ScalerConfig("C", "VH-C", "Q-C", "NS-C", "P-C", 10,
+        LogarithmicScaleRuleset("logScale",
+            LogarithmicScaleRule(10.0, 2, 2, 20)
+        )
+    )
 
     @BeforeEach
     fun resetMocks(){
@@ -89,6 +94,37 @@ class ScalerTest {
 
         val scaler = Scaler(queueConnection, kubernetesConnection)
         scaler.config = linearScaleConfig
+
+        scaler.run()
+
+        assertFalse(podCount.isCaptured)
+    }
+
+    @Test
+    fun scaleLogarithmicScale(){
+        val podCount = slot<Int>()
+        every { kubernetesConnection.setPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod, capture(podCount)) }.answers {}
+        every { queueConnection.getQueueMessageCount(logarithmicScaleConfig.queueVirtualHost, logarithmicScaleConfig.queueName) } returns 105
+        every { kubernetesConnection.getPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod) } returns 5
+
+        val scaler = Scaler(queueConnection, kubernetesConnection)
+        scaler.config = logarithmicScaleConfig
+
+        scaler.run()
+
+        assertTrue(podCount.isCaptured)
+        assertEquals(2, podCount.captured)
+    }
+
+    @Test
+    fun scaleLogarithmicScale_noScaling(){
+        val podCount = slot<Int>()
+        every { kubernetesConnection.setPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod, capture(podCount)) }.answers {}
+        every { queueConnection.getQueueMessageCount(logarithmicScaleConfig.queueVirtualHost, logarithmicScaleConfig.queueName) } returns 32
+        every { kubernetesConnection.getPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod) } returns 2
+
+        val scaler = Scaler(queueConnection, kubernetesConnection)
+        scaler.config = logarithmicScaleConfig
 
         scaler.run()
 
