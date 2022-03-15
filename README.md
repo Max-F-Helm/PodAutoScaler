@@ -12,8 +12,8 @@ with the scaling-rules.
   label: "<name for this conf entry (e.g. for logs)>; optional (default is '_unnamed_')"
   queueVirtualHost: "<path to the virtual host for the queue (including leading slash)>; optional (default is '/')"
   queueName: "<name of the RabbitMQ queue to observe>"
-  podNamespace: "<kubernetes namespace>"
-  pod: "<name of the deployment to scale>,"
+  podNamespace: "<kubernetes namespace>; optional (default is value of environment-var 'NAMESPACE')"
+  pod: "<name of the deployment to scale>"
   interval: "<interval in which the queue should be checked (in seconds); number>"
   ruleset:
       type: "<limit | linearScaling; sets the type of the rules>"

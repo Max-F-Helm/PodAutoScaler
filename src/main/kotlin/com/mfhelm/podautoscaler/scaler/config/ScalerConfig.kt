@@ -27,6 +27,8 @@ internal open class ConfigLoader{
     private var defaultMinPodCount: Int = 0
     @Value("\${defaults.maxPodCount}")
     private var defaultMaxPodCount: Int = 0
+    @Value("\${NAMESPACE:}")
+    private lateinit var defaultNamespace: String
 
     @PostConstruct
     private fun init(){
@@ -47,8 +49,9 @@ internal open class ConfigLoader{
                 val queueVirtualHost = it["queueVirtualHost"] as String? ?: "/"
                 val queueName = it["queueName"] as String?
                     ?: throw InvalidConfigException("missing parameter 'queueName'")
-                val podNamespace = it["podNamespace"] as String?
-                    ?: throw InvalidConfigException("missing parameter 'podNamespace'")
+                val podNamespace = it["podNamespace"] as String? ?: defaultNamespace
+                if(podNamespace.isEmpty())
+                    throw InvalidConfigException("missing parameter 'podNamespace' and no default is present")
                 val pod = it["pod"] as String?
                     ?: throw InvalidConfigException("missing parameter 'pod'")
                 val interval = (it["interval"] as Number?

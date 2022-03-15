@@ -9,7 +9,7 @@ import org.springframework.test.context.TestPropertySource
 import kotlin.test.assertEquals
 
 @SpringBootTest
-@TestPropertySource(properties = ["config = "])
+@TestPropertySource(properties = ["config = ", "NAMESPACE = nsp"])
 class ConfigLoaderTest {
 
     @Autowired
@@ -39,7 +39,6 @@ class ConfigLoaderTest {
                     podCount: 3
             -
               queueName: Q-B
-              podNamespace: NS-B
               pod: P-B
               interval: 60
               ruleset:
@@ -67,7 +66,7 @@ class ConfigLoaderTest {
                 }))
             )
             add(
-                ScalerConfig("_unnamed_", "/", "Q-B", "NS-B", "P-B", 60,
+                ScalerConfig("_unnamed_", "/", "Q-B", "nsp", "P-B", 60,
                 LimitRuleset("limit", ArrayList<LimitRule>().apply{
                     add(LimitRule(0, 1))
                     add(LimitRule(200, 2))
