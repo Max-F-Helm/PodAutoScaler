@@ -15,7 +15,7 @@ spec:
       labels:
         {{- include "service.selectorLabels" . | nindent 8 }}
       annotations:
-        checksum: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum: {{ .Values.scalerConfig | sha256sum }}
     spec:
       serviceAccountName: {{ include "service.serviceAccountName" . }}
       {{- with .Values.nodeSelector }}
@@ -51,6 +51,10 @@ spec:
               value: k8s
             - name: rabbitmq-host
               value: {{ .Values.rabbitmqHost }}
+            - name: rabbitmq-user
+              value: {{ .Values.rabbitmqUser }}
+            - name: rabbitmq-port
+              value: {{ .Values.rabbitmqPort | quote }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
@@ -59,7 +63,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "service.fullname" . }}-config
-                  key: config.yaml
+                  key: config
           envFrom:
             - secretRef:
                 name: {{ .Values.rabbitmqAccessSecret }}

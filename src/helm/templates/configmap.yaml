@@ -5,4 +5,4 @@ metadata:
   labels:
     {{- include "service.labels" . | nindent 4 }}
 data:
-  {{- (.Files.Glob "config/config.yaml").AsConfig | nindent 2 }}
+  config: | {{ .Values.scalerConfig | nindent 4 }}

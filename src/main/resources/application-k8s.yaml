@@ -3,7 +3,7 @@ spring:
     name: PodAutoScaler
   rabbitmq:
     host: ${rabbitmq-host}
-    port: ${RABBITMQ_SERVICE_PORT_AMQP}
+    port: ${rabbitmq-port}
     username: ${rabbitmq-user}
     password: ${rabbitmq-password}
 
