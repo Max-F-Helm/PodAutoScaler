@@ -41,9 +41,9 @@ class ScalerTest {
     @Test
     fun scaleLimit(){
         val podCount = slot<Int>()
-        every { kubernetesConnection.setPodCount(limitConfig.podNamespace, limitConfig.pod, capture(podCount)) }.answers {}
+        every { kubernetesConnection.setPodCount(limitConfig.deploymentNamespace, limitConfig.deployment, capture(podCount)) }.answers {}
         every { queueConnection.getQueueMessageCount(limitConfig.queueVirtualHost, limitConfig.queueName) } returns 105
-        every { kubernetesConnection.getPodCount(limitConfig.podNamespace, limitConfig.pod) } returns 1
+        every { kubernetesConnection.getPodCount(limitConfig.deploymentNamespace, limitConfig.deployment) } returns 1
 
         val scaler = Scaler(queueConnection, kubernetesConnection)
         scaler.config = limitConfig
@@ -57,9 +57,9 @@ class ScalerTest {
     @Test
     fun scaleLimit_noScaling(){
         val podCount = slot<Int>()
-        every { kubernetesConnection.setPodCount(limitConfig.podNamespace, limitConfig.pod, capture(podCount)) }.answers {}
+        every { kubernetesConnection.setPodCount(limitConfig.deploymentNamespace, limitConfig.deployment, capture(podCount)) }.answers {}
         every { queueConnection.getQueueMessageCount(limitConfig.queueVirtualHost, limitConfig.queueName) } returns 105
-        every { kubernetesConnection.getPodCount(limitConfig.podNamespace, limitConfig.pod) } returns 2
+        every { kubernetesConnection.getPodCount(limitConfig.deploymentNamespace, limitConfig.deployment) } returns 2
 
         val scaler = Scaler(queueConnection, kubernetesConnection)
         scaler.config = limitConfig
@@ -72,9 +72,9 @@ class ScalerTest {
     @Test
     fun scaleLinearScale(){
         val podCount = slot<Int>()
-        every { kubernetesConnection.setPodCount(linearScaleConfig.podNamespace, linearScaleConfig.pod, capture(podCount)) }.answers {}
+        every { kubernetesConnection.setPodCount(linearScaleConfig.deploymentNamespace, linearScaleConfig.deployment, capture(podCount)) }.answers {}
         every { queueConnection.getQueueMessageCount(linearScaleConfig.queueVirtualHost, linearScaleConfig.queueName) } returns 105
-        every { kubernetesConnection.getPodCount(linearScaleConfig.podNamespace, linearScaleConfig.pod) } returns 2
+        every { kubernetesConnection.getPodCount(linearScaleConfig.deploymentNamespace, linearScaleConfig.deployment) } returns 2
 
         val scaler = Scaler(queueConnection, kubernetesConnection)
         scaler.config = linearScaleConfig
@@ -88,9 +88,9 @@ class ScalerTest {
     @Test
     fun scaleLinearScale_noScaling(){
         val podCount = slot<Int>()
-        every { kubernetesConnection.setPodCount(linearScaleConfig.podNamespace, linearScaleConfig.pod, capture(podCount)) }.answers {}
+        every { kubernetesConnection.setPodCount(linearScaleConfig.deploymentNamespace, linearScaleConfig.deployment, capture(podCount)) }.answers {}
         every { queueConnection.getQueueMessageCount(linearScaleConfig.queueVirtualHost, linearScaleConfig.queueName) } returns 32
-        every { kubernetesConnection.getPodCount(linearScaleConfig.podNamespace, linearScaleConfig.pod) } returns 2
+        every { kubernetesConnection.getPodCount(linearScaleConfig.deploymentNamespace, linearScaleConfig.deployment) } returns 2
 
         val scaler = Scaler(queueConnection, kubernetesConnection)
         scaler.config = linearScaleConfig
@@ -103,9 +103,9 @@ class ScalerTest {
     @Test
     fun scaleLogarithmicScale(){
         val podCount = slot<Int>()
-        every { kubernetesConnection.setPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod, capture(podCount)) }.answers {}
+        every { kubernetesConnection.setPodCount(logarithmicScaleConfig.deploymentNamespace, logarithmicScaleConfig.deployment, capture(podCount)) }.answers {}
         every { queueConnection.getQueueMessageCount(logarithmicScaleConfig.queueVirtualHost, logarithmicScaleConfig.queueName) } returns 105
-        every { kubernetesConnection.getPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod) } returns 5
+        every { kubernetesConnection.getPodCount(logarithmicScaleConfig.deploymentNamespace, logarithmicScaleConfig.deployment) } returns 5
 
         val scaler = Scaler(queueConnection, kubernetesConnection)
         scaler.config = logarithmicScaleConfig
@@ -119,9 +119,9 @@ class ScalerTest {
     @Test
     fun scaleLogarithmicScale_noScaling(){
         val podCount = slot<Int>()
-        every { kubernetesConnection.setPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod, capture(podCount)) }.answers {}
+        every { kubernetesConnection.setPodCount(logarithmicScaleConfig.deploymentNamespace, logarithmicScaleConfig.deployment, capture(podCount)) }.answers {}
         every { queueConnection.getQueueMessageCount(logarithmicScaleConfig.queueVirtualHost, logarithmicScaleConfig.queueName) } returns 32
-        every { kubernetesConnection.getPodCount(logarithmicScaleConfig.podNamespace, logarithmicScaleConfig.pod) } returns 2
+        every { kubernetesConnection.getPodCount(logarithmicScaleConfig.deploymentNamespace, logarithmicScaleConfig.deployment) } returns 2
 
         val scaler = Scaler(queueConnection, kubernetesConnection)
         scaler.config = logarithmicScaleConfig

@@ -22,8 +22,8 @@ class ConfigLoaderTest {
               label: A
               queueVirtualHost: VH-A
               queueName: Q-A
-              podNamespace: NS-A
-              pod: P-A
+              deploymentNamespace: NS-A
+              deployment: P-A
               interval: 10
               ruleset:
                 type: limit
@@ -39,7 +39,7 @@ class ConfigLoaderTest {
                     podCount: 3
             -
               queueName: Q-B
-              pod: P-B
+              deployment: P-B
               interval: 60
               ruleset:
                 type: limit
@@ -84,8 +84,8 @@ class ConfigLoaderTest {
               label: A
               queueVirtualHost: VH-A
               queueName: Q-A
-              podNamespace: NS-A
-              pod: P-A
+              deploymentNamespace: NS-A
+              deployment: P-A
               interval: 10
               ruleset:
                 type: linearScale
@@ -97,8 +97,8 @@ class ConfigLoaderTest {
                     maxPodCount: 20
             -
               queueName: Q-B
-              podNamespace: NS-B
-              pod: P-B
+              deploymentNamespace: NS-B
+              deployment: P-B
               interval: 60
               ruleset:
                 type: linearScale
@@ -134,8 +134,8 @@ class ConfigLoaderTest {
               label: A
               queueVirtualHost: VH-A
               queueName: Q-A
-              podNamespace: NS-A
-              pod: P-A
+              deploymentNamespace: NS-A
+              deployment: P-A
               interval: 10
               ruleset:
                 type: logScale
@@ -147,8 +147,8 @@ class ConfigLoaderTest {
                     maxPodCount: 20
             -
               queueName: Q-B
-              podNamespace: NS-B
-              pod: P-B
+              deploymentNamespace: NS-B
+              deployment: P-B
               interval: 60
               ruleset:
                 type: logScale

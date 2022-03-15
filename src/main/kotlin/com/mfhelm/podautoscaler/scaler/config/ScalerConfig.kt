@@ -9,8 +9,8 @@ internal data class ScalerConfig(
     internal val label: String,
     internal val queueVirtualHost: String,
     internal val queueName: String,
-    internal val podNamespace: String,
-    internal val pod: String,
+    internal val deploymentNamespace: String,
+    internal val deployment: String,
     internal val interval: Long,
     internal val ruleset: Ruleset
 )
@@ -49,11 +49,11 @@ internal open class ConfigLoader{
                 val queueVirtualHost = it["queueVirtualHost"] as String? ?: "/"
                 val queueName = it["queueName"] as String?
                     ?: throw InvalidConfigException("missing parameter 'queueName'")
-                val podNamespace = it["podNamespace"] as String? ?: defaultNamespace
-                if(podNamespace.isEmpty())
-                    throw InvalidConfigException("missing parameter 'podNamespace' and no default is present")
-                val pod = it["pod"] as String?
-                    ?: throw InvalidConfigException("missing parameter 'pod'")
+                val deploymentNamespace = it["deploymentNamespace"] as String? ?: defaultNamespace
+                if(deploymentNamespace.isEmpty())
+                    throw InvalidConfigException("missing parameter 'deploymentNamespace' and no default is present")
+                val deployment = it["deployment"] as String?
+                    ?: throw InvalidConfigException("missing parameter 'deployment'")
                 val interval = (it["interval"] as Number?
                     ?: throw InvalidConfigException("missing parameter 'interval'")).toLong()
 
@@ -68,7 +68,7 @@ internal open class ConfigLoader{
                     else -> throw InvalidConfigException("invalid value for 'ruleset.type'")
                 }
 
-                return@map ScalerConfig(label, queueVirtualHost, queueName, podNamespace, pod, interval, rules)
+                return@map ScalerConfig(label, queueVirtualHost, queueName, deploymentNamespace, deployment, interval, rules)
             }
         }catch (e: ClassCastException){
             throw InvalidConfigException("parameter-value had wrong type", e)
