@@ -120,7 +120,7 @@ class ConfigLoaderTest {
             add(
                 ScalerConfig("_unnamed_", "/", "Q-B", "NS-B", "P-B", 60,
                 LinearScaleRuleset("linearScale",
-                    LinearScaleRule(1.0, 1, 1, 9999)
+                    LinearScaleRule(1.0, 1, 1, 10)
                 )
                 )
             )
