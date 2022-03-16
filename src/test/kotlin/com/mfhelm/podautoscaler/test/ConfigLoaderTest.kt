@@ -176,6 +176,80 @@ class ConfigLoaderTest {
         }
         assertEquals(expectedConfig, config)
     }
+
+    @Test
+    fun loadConfigWithUnits(){
+        val configString = """
+            -
+              label: A
+              queueVirtualHost: VH-A
+              queueName: Q-A
+              deploymentNamespace: NS-A
+              deployment: P-A
+              interval: 10s
+              ruleset:
+                type: limit
+                rules:
+                  -
+                    minMessageCount: 0
+                    podCount: 1
+            -
+              label: B
+              queueVirtualHost: VH-A
+              queueName: Q-A
+              deploymentNamespace: NS-A
+              deployment: P-A
+              interval: 10m
+              ruleset:
+                type: limit
+                rules:
+                  -
+                    minMessageCount: 1k
+                    podCount: 1
+            -
+              label: C
+              queueVirtualHost: VH-A
+              queueName: Q-A
+              deploymentNamespace: NS-A
+              deployment: P-A
+              interval: 10d
+              ruleset:
+                type: limit
+                rules:
+                  -
+                    minMessageCount: 1m
+                    podCount: 1
+        """.trimIndent()
+
+        val config = loader.loadConfig(configString)
+        val expectedConfig = ArrayList<ScalerConfig>().apply{
+            add(
+                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A",
+                    10,
+                    LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                        add(LimitRule(0, 1))
+                    })
+                )
+            )
+            add(
+                ScalerConfig("B", "VH-A", "Q-A", "NS-A", "P-A",
+                    10 * 60,
+                    LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                        add(LimitRule(1000, 1))
+                    })
+                )
+            )
+            add(
+                ScalerConfig("C", "VH-A", "Q-A", "NS-A", "P-A",
+                    10 * 60 * 60 * 24,
+                    LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                        add(LimitRule(1000000, 1))
+                    })
+                )
+            )
+        }
+        assertEquals(expectedConfig, config)
+    }
 }
 
 @Component
