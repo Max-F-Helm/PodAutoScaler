@@ -20,60 +20,93 @@ class ConfigLoaderTest {
         val configString = """
             -
               label: A
-              queueVirtualHost: VH-A
-              queueName: Q-A
               deploymentNamespace: NS-A
               deployment: P-A
               interval: 10
-              ruleset:
-                type: limit
-                rules:
-                  -
-                    minMessageCount: 0
-                    podCount: 1
-                  -
-                    minMessageCount: 100
-                    podCount: 2
-                  -
-                    minMessageCount: 200
-                    podCount: 3
+              queues:
+                -
+                  virtualHost: VH-A
+                  name: Q-A
+                  ruleset:
+                    type: limit
+                    rules:
+                      -
+                        minMessageCount: 0
+                        podCount: 1
+                      -
+                        minMessageCount: 100
+                        podCount: 2
+                      -
+                        minMessageCount: 200
+                        podCount: 3
+                -
+                  virtualHost: VH-A2
+                  name: Q-A2
+                  ruleset:
+                    type: limit
+                    rules:
+                      -
+                        minMessageCount: 0
+                        podCount: 1
+                      -
+                        minMessageCount: 100
+                        podCount: 2
+                      -
+                        minMessageCount: 200
+                        podCount: 3
             -
-              queueName: Q-B
               deployment: P-B
               interval: 60
-              ruleset:
-                type: limit
-                rules:
-                  -
-                    minMessageCount: 0
-                    podCount: 1
-                  -
-                    minMessageCount: 200
-                    podCount: 2
-                  -
-                    minMessageCount: 500
-                    podCount: 4
+              queues:
+                -
+                  name: Q-B
+                  ruleset:
+                    type: limit
+                    rules:
+                      -
+                        minMessageCount: 0
+                        podCount: 1
+                      -
+                        minMessageCount: 200
+                        podCount: 2
+                      -
+                        minMessageCount: 500
+                        podCount: 4
         """.trimIndent()
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
             add(
-                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A", 10,
-                LimitRuleset("limit", ArrayList<LimitRule>().apply{
-                    add(LimitRule(0, 1))
-                    add(LimitRule(100, 2))
-                    add(LimitRule(200, 3))
-                }))
+                ScalerConfig("A", "NS-A", "P-A", 10,
+                    setOf(
+                        QueueConfig("VH-A", "Q-A",
+                            LimitRuleset("limit", ArrayList<LimitRule>().apply{
+                                add(LimitRule(0, 1))
+                                add(LimitRule(100, 2))
+                                add(LimitRule(200, 3))
+                            })
+                        ),
+                        QueueConfig("VH-A2", "Q-A2",
+                            LimitRuleset("limit", ArrayList<LimitRule>().apply{
+                                add(LimitRule(0, 1))
+                                add(LimitRule(100, 2))
+                                add(LimitRule(200, 3))
+                            })
+                        )
+                    )
+                )
             )
             add(
-                ScalerConfig("_unnamed_", "/", "Q-B", "nsp", "P-B", 60,
-                LimitRuleset("limit", ArrayList<LimitRule>().apply{
-                    add(LimitRule(0, 1))
-                    add(LimitRule(200, 2))
-                    add(LimitRule(500, 4))
-                }))
+                ScalerConfig("_unnamed_", "nsp", "P-B", 60,
+                    setOf(QueueConfig("/", "Q-B",
+                        LimitRuleset("limit", ArrayList<LimitRule>().apply{
+                            add(LimitRule(0, 1))
+                            add(LimitRule(200, 2))
+                            add(LimitRule(500, 4))
+                }))))
             )
         }
+
         assertEquals(expectedConfig, config)
     }
 
@@ -82,45 +115,53 @@ class ConfigLoaderTest {
         val configString = """
             -
               label: A
-              queueVirtualHost: VH-A
-              queueName: Q-A
               deploymentNamespace: NS-A
               deployment: P-A
               interval: 10
-              ruleset:
-                type: linearScale
-                rules:
-                  -
-                    factor: 0.1
-                    stepThreshold: 2
-                    minPodCount: 2
-                    maxPodCount: 20
+              queues:
+                -
+                  virtualHost: VH-A
+                  name: Q-A
+                  ruleset:
+                    type: linearScale
+                    rules:
+                      -
+                        factor: 0.1
+                        stepThreshold: 2
+                        minPodCount: 2
+                        maxPodCount: 20
             -
-              queueName: Q-B
               deploymentNamespace: NS-B
               deployment: P-B
               interval: 60
-              ruleset:
-                type: linearScale
-                rules:
-                  -
-                    factor: 1
+              queues:
+                -
+                  name: Q-B
+                  ruleset:
+                    type: linearScale
+                    rules:
+                      -
+                        factor: 1
         """.trimIndent()
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
             add(
-                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A", 10,
-                LinearScaleRuleset("linearScale",
-                    LinearScaleRule(0.1, 2, 2, 20)
+                ScalerConfig("A", "NS-A", "P-A", 10,
+                    setOf(QueueConfig("VH-A", "Q-A",
+                        LinearScaleRuleset("linearScale",
+                            LinearScaleRule(0.1, 2, 2, 20)
+                        )
+                    ))
                 )
-            )
             )
             add(
-                ScalerConfig("_unnamed_", "/", "Q-B", "NS-B", "P-B", 60,
-                LinearScaleRuleset("linearScale",
-                    LinearScaleRule(1.0, 1, 1, 10)
-                )
+                ScalerConfig("_unnamed_", "NS-B", "P-B", 60,
+                    setOf(QueueConfig("/", "Q-B",
+                        LinearScaleRuleset("linearScale",
+                            LinearScaleRule(1.0, 1, 1, 10)
+                        )
+                    ))
                 )
             )
         }
@@ -132,45 +173,53 @@ class ConfigLoaderTest {
         val configString = """
             -
               label: A
-              queueVirtualHost: VH-A
-              queueName: Q-A
               deploymentNamespace: NS-A
               deployment: P-A
               interval: 10
-              ruleset:
-                type: logScale
-                rules:
-                  -
-                    base: 10
-                    stepThreshold: 2
-                    minPodCount: 2
-                    maxPodCount: 20
+              queues:
+                -
+                  virtualHost: VH-A
+                  name: Q-A
+                  ruleset:
+                    type: logScale
+                    rules:
+                      -
+                        base: 10
+                        stepThreshold: 2
+                        minPodCount: 2
+                        maxPodCount: 20
             -
-              queueName: Q-B
               deploymentNamespace: NS-B
               deployment: P-B
               interval: 60
-              ruleset:
-                type: logScale
-                rules:
-                  -
-                    base: 10
+              queues:
+                -
+                  name: Q-B
+                  ruleset:
+                    type: logScale
+                    rules:
+                      -
+                        base: 10
         """.trimIndent()
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
             add(
-                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A", 10,
-                    LogarithmicScaleRuleset("logScale",
-                        LogarithmicScaleRule(10.0, 2, 2, 20)
-                    )
+                ScalerConfig("A", "NS-A", "P-A", 10,
+                    setOf(QueueConfig("VH-A", "Q-A",
+                        LogarithmicScaleRuleset("logScale",
+                            LogarithmicScaleRule(10.0, 2, 2, 20)
+                        )
+                    ))
                 )
             )
             add(
-                ScalerConfig("_unnamed_", "/", "Q-B", "NS-B", "P-B", 60,
-                    LogarithmicScaleRuleset("logScale",
-                        LogarithmicScaleRule(10.0, 1, 1, 10)
-                    )
+                ScalerConfig("_unnamed_", "NS-B", "P-B", 60,
+                    setOf(QueueConfig("/", "Q-B",
+                        LogarithmicScaleRuleset("logScale",
+                            LogarithmicScaleRule(10.0, 1, 1, 10)
+                        )
+                    ))
                 )
             )
         }
@@ -182,69 +231,78 @@ class ConfigLoaderTest {
         val configString = """
             -
               label: A
-              queueVirtualHost: VH-A
-              queueName: Q-A
               deploymentNamespace: NS-A
               deployment: P-A
               interval: 10s
-              ruleset:
-                type: limit
-                rules:
-                  -
-                    minMessageCount: 0
-                    podCount: 1
+              queues:
+                - virtualHost: VH-A
+                  name: Q-A
+                  ruleset:
+                    type: limit
+                    rules:
+                      -
+                        minMessageCount: 0
+                        podCount: 1
             -
               label: B
-              queueVirtualHost: VH-A
-              queueName: Q-A
               deploymentNamespace: NS-A
               deployment: P-A
               interval: 10m
-              ruleset:
-                type: limit
-                rules:
-                  -
-                    minMessageCount: 1k
-                    podCount: 1
+              queues:
+                - virtualHost: VH-A
+                  name: Q-A
+                  ruleset:
+                    type: limit
+                    rules:
+                      -
+                        minMessageCount: 1k
+                        podCount: 1
             -
               label: C
-              queueVirtualHost: VH-A
-              queueName: Q-A
               deploymentNamespace: NS-A
               deployment: P-A
               interval: 10d
-              ruleset:
-                type: limit
-                rules:
-                  -
-                    minMessageCount: 1m
-                    podCount: 1
+              queues:
+                - virtualHost: VH-A
+                  name: Q-A
+                  ruleset:
+                    type: limit
+                    rules:
+                      -
+                        minMessageCount: 1m
+                        podCount: 1
         """.trimIndent()
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
             add(
-                ScalerConfig("A", "VH-A", "Q-A", "NS-A", "P-A",
+                ScalerConfig("A", "NS-A", "P-A",
                     10,
-                    LimitRuleset("limit", ArrayList<LimitRule>().apply {
-                        add(LimitRule(0, 1))
-                    })
+                    setOf(QueueConfig("VH-A", "Q-A",
+                        LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            add(LimitRule(0, 1))
+                        })
+                    ))
                 )
             )
             add(
-                ScalerConfig("B", "VH-A", "Q-A", "NS-A", "P-A",
+                ScalerConfig("B", "NS-A", "P-A",
                     10 * 60,
-                    LimitRuleset("limit", ArrayList<LimitRule>().apply {
-                        add(LimitRule(1000, 1))
-                    })
+                    setOf(QueueConfig("VH-A", "Q-A",
+                        LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            add(LimitRule(1000, 1))
+                        })
+                    ))
                 )
             )
             add(
-                ScalerConfig("C", "VH-A", "Q-A", "NS-A", "P-A",
+                ScalerConfig("C", "NS-A", "P-A",
                     10 * 60 * 60 * 24,
-                    LimitRuleset("limit", ArrayList<LimitRule>().apply {
-                        add(LimitRule(1000000, 1))
-                    })
+                    setOf(QueueConfig("VH-A", "Q-A",
+                        LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            add(LimitRule(1000000, 1))
+                        })
+                    ))
                 )
             )
         }

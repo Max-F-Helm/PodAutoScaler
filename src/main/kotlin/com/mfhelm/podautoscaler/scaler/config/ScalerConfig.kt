@@ -8,12 +8,10 @@ import javax.annotation.PostConstruct
 
 internal data class ScalerConfig(
     internal val label: String,
-    internal val queueVirtualHost: String,
-    internal val queueName: String,
     internal val deploymentNamespace: String,
     internal val deployment: String,
     internal val interval: Long,
-    internal val ruleset: Ruleset
+    internal val queueSet: Set<QueueConfig>
 )
 
 @Suppress("UNCHECKED_CAST")
@@ -48,9 +46,6 @@ internal open class ConfigLoader{
         try {
             return entries.map {
                 val label: String = it.getOrDefault("label", "_unnamed_") as String
-                val queueVirtualHost = it["queueVirtualHost"] as String? ?: "/"
-                val queueName = it["queueName"] as String?
-                    ?: throw InvalidConfigException("missing parameter 'queueName'")
                 val deploymentNamespace = it["deploymentNamespace"] as String? ?: defaultNamespace
                 if(deploymentNamespace.isEmpty())
                     throw InvalidConfigException("missing parameter 'deploymentNamespace' and no default is present")
@@ -61,18 +56,31 @@ internal open class ConfigLoader{
                     ?: throw InvalidConfigException("missing parameter 'interval'")).toString()
                 val interval = parseTimeValue(intervalStr, "'interval'")
 
-                val ruleset = it["ruleset"] as Map<String, *>?
-                    ?: throw InvalidConfigException("missing parameter 'ruleset'")
-                val rulesType = ruleset["type"] as String?
-                    ?: throw InvalidConfigException("missing parameter 'ruleset.type'")
-                val rules: Ruleset = when(rulesType){
-                    LimitRuleset.TYPE -> loadLimitRuleset(ruleset)
-                    LinearScaleRuleset.TYPE -> loadLinearScaleRuleset(ruleset)
-                    LogarithmicScaleRuleset.TYPE -> loadLogarithmicScaleRuleset(ruleset)
-                    else -> throw InvalidConfigException("invalid value for 'ruleset.type'")
-                }
+                val queues = it["queues"] as List<Map<String, *>>?
+                    ?: throw InvalidConfigException("missing parameter 'queues'")
+                val queueSet = queues.map{
+                    val virtualHost = it["virtualHost"] as String? ?: "/"
+                    val name = it["name"] as String?
+                        ?: throw InvalidConfigException("missing parameter 'queues.name'")
 
-                return@map ScalerConfig(label, queueVirtualHost, queueName, deploymentNamespace, deployment, interval, rules)
+                    val ruleset = it["ruleset"] as Map<String, *>?
+                        ?: throw InvalidConfigException("missing parameter 'ruleset'")
+                    val rulesType = ruleset["type"] as String?
+                        ?: throw InvalidConfigException("missing parameter 'ruleset.type'")
+                    val rules: Ruleset = when(rulesType){
+                        LimitRuleset.TYPE -> loadLimitRuleset(ruleset)
+                        LinearScaleRuleset.TYPE -> loadLinearScaleRuleset(ruleset)
+                        LogarithmicScaleRuleset.TYPE -> loadLogarithmicScaleRuleset(ruleset)
+                        else -> throw InvalidConfigException("invalid value for 'ruleset.type'")
+                    }
+
+                    QueueConfig(virtualHost, name, rules)
+                }.toSet()
+
+                if(queueSet.isEmpty())
+                    throw InvalidConfigException("'queues' must have at least one entry")
+
+                ScalerConfig(label, deploymentNamespace, deployment, interval, queueSet)
             }
         }catch (e: ClassCastException){
             throw InvalidConfigException("parameter-value had wrong type", e)
