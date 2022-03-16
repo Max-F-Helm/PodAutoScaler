@@ -76,7 +76,7 @@ internal class LimitRuleset(override val type: String, rules: List<LimitRule>) :
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(LimitRuleset::class.qualifiedName, type, limits)
+        return Objects.hash(LimitRuleset::class.qualifiedName, type, limits.contentHashCode())
     }
 
     override fun toString(): String {
