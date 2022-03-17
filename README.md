@@ -5,8 +5,54 @@ depending on the message-count of given RabbitMQ queues.
 It uses a YAML configuration where you can set all queue--deployment relations
 with the scaling-rules.
 
+### Deployment with Helm
+
+To deploy this application using helm, you simply write a ``values.yaml`` and use the command described below.
+
+````yaml
+replicaCount: 1
+
+image:
+  repository: mfhelm/podautoscaler
+  pullPolicy: Always
+  version: latest
+
+serviceAccount:
+  create: true
+
+rabbitmqAccessSecret: <name of the secret for RabbitMQ (*1)>
+rabbitmqUser: <username for RabbitMQ-Server>
+rabbitmqHost: <host of RabbitMQ-Server>
+rabbitmqPort: <port of RabbitMQ-Server>
+
+service:
+  type: NodePort
+  port: 8080
+  livenessCheckPath: /actuator/health/liveness
+  readinessCheckPath: /actuator/health/readiness
+
+ingress:
+  enabled: true
+````
+
+*1: The secret must set the environment-variable ``rabbitmq-password`` to the password for the RabbitMQ-User.
+
+Additionally, the value ``scalerConfig`` must contain the string of the config-yaml.
+It can be written directly in the values.yaml or read from a file by appending
+``--set-file scalerConfig=<path to config.yaml>`` to the helm-upgrade-command.
+
+---
+To deploy the application, first the mayope helm-repository mus be added.
+Then you can install it with the second command.
+````shell
+helm repo add mayope https://charts.mayope.net
+
+helm upgrade --install <name of deployment> mayope/podautoscaler -f values.yaml -n <namespace to deploy to>
+````
+
 ### Configuration
 
+The configuration has the following format:
 ````yaml
 -
   label: "<name for this conf entry (e.g. for logs)>; optional (default is '_unnamed_')"
@@ -174,45 +220,3 @@ which calculates the new pod-count. The final pod-count is the maximum of all th
 An example:
 - queue_a-count = 100, queue_b-count = 100, current-pod-count = 1 => 2 pods
 - queue_a-count = 100, queue_b-count = 1000, current-pod-count = 1 => 5 pods
-
-### Deployment with Helm
-
-To deploy this application using helm, you simply write a ``values.yaml`` and use the command described below.
-
-````yaml
-replicaCount: 1
-
-image:
-  repository: mfhelm/podautoscaler
-  pullPolicy: Always
-  version: latest
-
-serviceAccount:
-  create: true
-
-rabbitmqAccessSecret: <name of the secret for RabbitMQ (*1)>
-rabbitmqUser: <username for RabbitMQ-Server>
-rabbitmqHost: <host of RabbitMQ-Server>
-rabbitmqPort: <port of RabbitMQ-Server>
-
-service:
-  type: NodePort
-  port: 8080
-  livenessCheckPath: /actuator/health/liveness
-  readinessCheckPath: /actuator/health/readiness
-
-ingress:
-  enabled: true
-````
-
-*1: The secret must set the environment-variable ``rabbitmq-password`` to the password for the RabbitMQ-User.
-
-Additionally, the value ``scalerConfig`` must contain the string of the config-yaml.
-It can be written directly in the values.yaml or read from a file by appending
-``--set-file scalerConfig=<path to config.yaml>`` to the helm-command.
-
-To deploy the application use the following command:
-``helm upgrade --install <name of deployment> mayope/podautoscaler -f values.yaml -n <namespace to deploy to>``
-
-Before using this command you have to register the mayope repository:
-``helm repo add mayope https://charts.mayope.net``
