@@ -7,8 +7,6 @@ spring:
     username: ${rabbitmq-user}
     password: ${rabbitmq-password}
 
-namespace: ${NAMESPACE}
-
 defaults:
   minPodCount: 1
   maxPodCount: 10
