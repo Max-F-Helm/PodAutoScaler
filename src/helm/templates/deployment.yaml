@@ -49,11 +49,11 @@ spec:
           env:
             - name: spring_profiles_active
               value: k8s
-            - name: rabbitmq-host
+            - name: pas-rabbitmq-host
               value: {{ .Values.rabbitmqHost }}
-            - name: rabbitmq-user
+            - name: pas-rabbitmq-user
               value: {{ .Values.rabbitmqUser }}
-            - name: rabbitmq-port
+            - name: pas-rabbitmq-port
               value: {{ .Values.rabbitmqPort | quote }}
             - name: NAMESPACE
               valueFrom:
