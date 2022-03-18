@@ -64,6 +64,10 @@ spec:
                 configMapKeyRef:
                   name: {{ include "service.fullname" . }}-config
                   key: config
+            {{ if .Values.logTrace }}
+            - name: _JAVA_OPTIONS
+              value: "-Dlogging.level.com.mfhelm.podautoscaler.scaler=TRACE"
+            {{ end }}
           envFrom:
             - secretRef:
                 name: {{ .Values.rabbitmqAccessSecret }}

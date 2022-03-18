@@ -41,6 +41,8 @@ Additionally, the value ``scalerConfig`` must contain the string of the config-y
 It can be written directly in the values.yaml or read from a file by appending
 ``--set-file scalerConfig=<path to config.yaml>`` to the helm-upgrade-command.
 
+Optionally tracing of rule-execution can be enabled by adding ``logTrace: true`` to the values.
+
 ---
 To deploy the application, first the mayope helm-repository mus be added.
 Then you can install it with the second command.

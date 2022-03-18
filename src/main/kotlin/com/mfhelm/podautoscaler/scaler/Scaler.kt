@@ -20,12 +20,17 @@ internal class Scaler(private val messageQueueConnection: MessageQueueConnection
         try {
             val currentPodCount = kubernetesConnection.getPodCount(config.deploymentNamespace, config.deployment)
 
+            logger.trace("${config.label}: updating podCount (current podCount: $currentPodCount)")
+
             var newPodCount = -1
             var triggeringQueue = ""
             var triggeringMessageCount = 0
             for(queue in config.queueSet) {
                 val messageCount = messageQueueConnection.getQueueMessageCount(queue.virtualHost, queue.name)
                 val computedCount = queue.ruleset.computePodCount(messageCount, currentPodCount)
+
+                logger.trace("${config.label}: computed podCount: $computedCount for messageCount $messageCount of queue ${queue.virtualHost}/${queue.name} with ruleset ${queue.ruleset}")
+
                 // for comparison -1 must be translated
                 val computedCountTranslated = if(computedCount == -1) currentPodCount else computedCount
                 if(computedCountTranslated > newPodCount){
