@@ -117,9 +117,12 @@ The configuration is passed to the application via the environment-variable `con
 
 This example will observe the queue 'queue_a' on virtual-host '/hostA'
 and scale the deployment 'example' in namespace 'ns-1' according to the following rules:
-- 0 <= message-count < 500 => 1 pod
-- 500 <= message-count < 2000 => 2 pods
-- message-count >= 2000 => 5 pods
+
+| Message-Count    | new Pod-Count |
+|------------------|---------------|
+| 0 <= mc < 500    | 1             |
+| 500 <= mc < 2000 | 2             |
+| mc >= 2000       | 5             |
 
 #### Example with linearScale
 
@@ -143,11 +146,14 @@ and scale the deployment 'example' in namespace 'ns-1' according to the followin
               maxPodCount: 5
 ````
 
-This example is similar to the last. The difference is the interval, which is 5 minutes and the rules.
+This example is similar to the last. The difference is the interval (which is 5 minutes) and the rules.
 For the rules here are some example-calculations:
-- message-count = 490, current-pod-count = 1 => 5 pods (pod-count will be rounded)
-- message-count = 700, current-pod-count = 1 => 5 pods (because ``maxPodCount`` is 5)
-- message-count = 100, current-pod-count = 2 => 2 pods (because ``stepThreshold`` is 2 and the new pod-count would be 1)
+
+| Message-Count | current Pod-Count | new Pod-Count | Notes                                                                                        |
+|---------------|-------------------|---------------|----------------------------------------------------------------------------------------------|
+| mc = 490      | pc = 1            | 5             | pod-count will be rounded                                                                    |
+| mc = 700      | pc = 1            | 5             | because ``maxPodCount`` is 5                                                                 |
+| mc = 100      | pc = 2            | 2             | because ``stepThreshold`` is 2 and the new pod-count would be 1 (pc - 1 < ``stepThreshold``) |
 
 #### Example with logScale
 
@@ -171,9 +177,11 @@ For the rules here are some example-calculations:
               maxPodCount: 5
 ````
 
-- message-count = 2, current-pod-count = 5 => 1 pods (pod-count will be rounded and ``minPodCount`` is 1)
-- message-count = 1000, current-pod-count = 1 => 3 pods
-- message-count = 30000, current-pod-count = 5 => 5 pods (because ``stepThreshold`` is 2 and the new pod-count would be 4)
+| Message-Count | current Pod-Count | new Pod-Count | Notes                                                                                        |
+|---------------|-------------------|---------------|----------------------------------------------------------------------------------------------|
+| mc = 2        | pc = 5            | 1             | new Pod-Count will be rounded and ``minPodCount`` is 1                                       |
+| mc = 1000     | pc = 1            | 3             |                                                                                              |
+| mc = 30000    | pc = 5            | 5             | because ``stepThreshold`` is 2 and the new Pod-Count would be 4 (pc - 4 < ``stepThreshold``) |
 
 #### Example with multiple queues
 
@@ -212,5 +220,8 @@ It is also possible to observe more than one queue per deployment. Each queue ha
 which calculates the new pod-count. The final pod-count is the maximum of all the calculated count of the queue-rulesets.
 
 An example:
-- queue_a-count = 100, queue_b-count = 100, current-pod-count = 1 => 2 pods
-- queue_a-count = 100, queue_b-count = 1000, current-pod-count = 1 => 5 pods
+
+| Queue-A Message-Count | Queue-B Message-Count | current Pod-Count | new Pod-Count |
+|-----------------------|-----------------------|-------------------|---------------|
+| 100                   | 100                   | cp = 1            | 2             |
+| 100                   | 1000                  | cp = 1            | 5             |
