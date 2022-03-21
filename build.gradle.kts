@@ -35,7 +35,7 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.20-RC")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
 
     // Mocking
     testImplementation("io.mockk:mockk:1.12.3")
@@ -52,8 +52,6 @@ deploy {
         dockerLogin {
             registryRoot = property("registryRoot").toString()
             loginMethod = net.mayope.deployplugin.tasks.DockerLoginMethod.DOCKERHUB
-            loginUsername = property("dockerUser").toString()
-            loginPassword = property("dockerPwd").toString()
         }
         dockerPush {
             registryRoot = property("registryRoot").toString()
