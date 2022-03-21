@@ -16,7 +16,7 @@ internal data class ScalerConfig(
 
 @Suppress("UNCHECKED_CAST")
 @Component
-internal open class ConfigLoader{
+internal class ConfigLoader{
 
     internal final lateinit var configEntries: List<ScalerConfig>
         private set
@@ -36,7 +36,7 @@ internal open class ConfigLoader{
     }
 
     // protected for tests
-    protected open fun loadConfig(src: String): List<ScalerConfig>{
+    protected fun loadConfig(src: String): List<ScalerConfig>{
         if(src.isEmpty())
             return listOf()
 

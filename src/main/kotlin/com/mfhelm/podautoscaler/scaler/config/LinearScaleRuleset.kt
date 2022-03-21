@@ -1,6 +1,6 @@
 package com.mfhelm.podautoscaler.scaler.config
 
-import java.util.*
+import java.util.Objects
 import kotlin.math.abs
 import kotlin.math.roundToInt
 

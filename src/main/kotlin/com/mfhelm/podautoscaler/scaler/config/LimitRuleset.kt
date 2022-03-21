@@ -1,6 +1,6 @@
 package com.mfhelm.podautoscaler.scaler.config
 
-import java.util.*
+import java.util.Objects
 
 internal class LimitRuleset(override val type: String, rules: List<LimitRule>) : Ruleset {
 

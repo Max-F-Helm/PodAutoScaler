@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-internal open class KubernetesClientConfig {
+internal class KubernetesClientConfig {
 
     @Bean
-    open fun kubernetesClient() = DefaultKubernetesClient()
+    fun kubernetesClient() = DefaultKubernetesClient()
 }
