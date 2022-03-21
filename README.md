@@ -10,38 +10,30 @@ with the scaling-rules.
 To deploy this application using helm, you simply write a ``values.yaml`` and use the command described below.
 
 ````yaml
-replicaCount: 1
-
 image:
   repository: mfhelm/podautoscaler
   pullPolicy: Always
   version: latest
-
-serviceAccount:
-  create: true
 
 rabbitmqAccessSecret: <name of the secret for RabbitMQ (*1)>
 rabbitmqUser: <username for RabbitMQ-Server>
 rabbitmqHost: <host of RabbitMQ-Server>
 rabbitmqPort: <port of RabbitMQ-Server>
 
-service:
-  type: NodePort
-  port: 8080
-  livenessCheckPath: /actuator/health/liveness
-  readinessCheckPath: /actuator/health/readiness
+logTrace: false
 
-ingress:
-  enabled: true
+scalerConfig: |
+  <scalerConfig>
 ````
 
 *1: The secret must set the environment-variable ``rabbitmq-password`` to the password for the RabbitMQ-User.
 
-Additionally, the value ``scalerConfig`` must contain the string of the config-yaml.
+The value ``scalerConfig`` must contain the string of the config-yaml.
 It can be written directly in the values.yaml or read from a file by appending
-``--set-file scalerConfig=<path to config.yaml>`` to the helm-upgrade-command.
+``--set-file scalerConfig=<path to config.yaml>`` to the helm-upgrade-command
+(in this case you must remove the last two lines).
 
-Optionally tracing of rule-execution can be enabled by adding ``logTrace: true`` to the values.
+Optionally tracing of rule-execution can be enabled by setting ``logTrace: true``.
 
 ---
 To deploy the application, first the mayope helm-repository mus be added.
