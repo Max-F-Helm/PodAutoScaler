@@ -16,21 +16,19 @@ internal class MessageQueueConnection(
 
     private val vHostConnections: HashMap<String, AmqpAdmin> = HashMap()
 
-    fun getQueueMessageCount(vHostName: String, queueName: String): Int{
+    fun getQueueMessageCount(vHostName: String, queueName: String): Int {
         val conn = getConnection(vHostName)
         return conn.getQueueInfo(queueName)?.messageCount
             ?: throw IllegalArgumentException("queue with name $queueName not found")
     }
 
-    private fun getConnection(vHost: String): AmqpAdmin{
-        return vHostConnections.computeIfAbsent(vHost){
+    private fun getConnection(vHost: String): AmqpAdmin {
+        return vHostConnections.computeIfAbsent(vHost) {
             val factory = CachingConnectionFactory().apply {
                 host = rabbitHost
                 port = rabbitPort
                 username = rabbitUser
-
                 setPassword(rabbitPassword)
-
                 virtualHost = vHost
             }
             return@computeIfAbsent RabbitAdmin(factory)

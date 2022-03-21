@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component
 @Component
 internal class KubernetesConnection(private val clientConfig: KubernetesClient) {
 
-    internal fun getPodCount(namespace: String, deploymentName: String): Int{
+    internal fun getPodCount(namespace: String, deploymentName: String): Int {
         return getDeployment(namespace, deploymentName).scale().status.replicas
     }
 
-    internal fun setPodCount(namespace: String, deploymentName: String, count: Int){
+    internal fun setPodCount(namespace: String, deploymentName: String, count: Int) {
         getDeployment(namespace, deploymentName).scale(count)
     }
 

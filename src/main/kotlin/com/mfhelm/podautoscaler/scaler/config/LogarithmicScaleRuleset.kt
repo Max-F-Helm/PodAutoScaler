@@ -7,7 +7,7 @@ import kotlin.math.roundToInt
 
 internal class LogarithmicScaleRuleset(override val type: String, internal val rule: LogarithmicScaleRule) : Ruleset {
 
-    companion object{
+    companion object {
         const val TYPE = "logScale"
     }
 
@@ -15,15 +15,20 @@ internal class LogarithmicScaleRuleset(override val type: String, internal val r
         val newCount = log(messageCount.toDouble(), rule.base).roundToInt()
             .coerceIn(rule.minPodCount, rule.maxPodCount)
         val overThreshold = abs(currentPodCount - newCount) >= rule.stepThreshold
-        return if(overThreshold) newCount else -1
+        return if (overThreshold) newCount else -1
     }
 
     override fun equals(other: Any?): Boolean {
-        if(other === this) return true
-        if(other === null) return false
-
-        if(other !is LogarithmicScaleRuleset)
+        if (other === this) {
+            return true
+        }
+        if (other === null) {
             return false
+        }
+
+        if (other !is LogarithmicScaleRuleset) {
+            return false
+        }
 
         return other.type == type && other.rule == rule
     }

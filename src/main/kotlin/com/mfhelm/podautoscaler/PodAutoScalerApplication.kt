@@ -8,6 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 internal class PodAutoScalerApplication
 
-fun main(args: Array<String>){
+fun main(args: Array<String>) {
     runApplication<PodAutoScalerApplication>(*args)
 }

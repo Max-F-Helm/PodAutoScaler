@@ -13,15 +13,15 @@ import java.util.concurrent.Executors
 internal class Scheduler(
     private val beanFactory: BeanFactory,
     private val configLoader: ConfigLoader
-) : SchedulingConfigurer{
+) : SchedulingConfigurer {
 
     override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
         val executor = Executors.newScheduledThreadPool(1)
         taskRegistrar.setScheduler(executor)
 
         // schedule each scaler
-        configLoader.configEntries.forEach{
-            val scaler: Scaler = beanFactory.getBean("Scaler") as Scaler
+        configLoader.configEntries.forEach {
+            val scaler = beanFactory.getBean("Scaler", Scaler::class.java)
             scaler.config = it
             taskRegistrar.addFixedRateTask(scaler, it.interval * 1000)
         }
