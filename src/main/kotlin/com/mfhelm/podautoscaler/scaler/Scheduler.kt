@@ -10,13 +10,10 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.Executors
 
 @Component
-@EnableScheduling
-internal class Scheduler : SchedulingConfigurer{
-
-    @Autowired
-    private lateinit var beanFactory: BeanFactory
-    @Autowired
-    private lateinit var configLoader: ConfigLoader
+internal class Scheduler(
+    private val beanFactory: BeanFactory,
+    private val configLoader: ConfigLoader
+) : SchedulingConfigurer{
 
     override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
         val executor = Executors.newScheduledThreadPool(1)

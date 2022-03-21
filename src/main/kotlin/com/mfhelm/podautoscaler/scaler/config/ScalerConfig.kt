@@ -16,19 +16,15 @@ internal data class ScalerConfig(
 
 @Suppress("UNCHECKED_CAST")
 @Component
-internal class ConfigLoader{
+internal class ConfigLoader(
+    @Value("\${config}") private val configString: String,
+    @Value("\${defaults.minPodCount}") private val defaultMinPodCount: Int,
+    @Value("\${defaults.maxPodCount}") private val defaultMaxPodCount: Int,
+    @Value("\${NAMESPACE:}") private val defaultNamespace: String
+){
 
     internal final lateinit var configEntries: List<ScalerConfig>
         private set
-
-    @Value("\${config}")
-    private lateinit var configString: String
-    @Value("\${defaults.minPodCount}")
-    private var defaultMinPodCount: Int = 0
-    @Value("\${defaults.maxPodCount}")
-    private var defaultMaxPodCount: Int = 0
-    @Value("\${NAMESPACE:}")
-    private lateinit var defaultNamespace: String
 
     @PostConstruct
     private fun init(){

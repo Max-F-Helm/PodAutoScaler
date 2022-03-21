@@ -3,6 +3,7 @@ package com.mfhelm.podautoscaler.test
 import com.mfhelm.podautoscaler.scaler.config.*
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 import org.springframework.test.context.TestPropertySource
@@ -161,7 +162,12 @@ class ConfigLoaderTest {
 }
 
 @Component
-internal class ConfigLoaderBinding : ConfigLoader() {
+internal class ConfigLoaderBinding(
+    @Value("\${config}") private val configString: String,
+    @Value("\${defaults.minPodCount}") private val defaultMinPodCount: Int,
+    @Value("\${defaults.maxPodCount}") private val defaultMaxPodCount: Int,
+    @Value("\${NAMESPACE:}") private val defaultNamespace: String
+) : ConfigLoader(configString, defaultMinPodCount, defaultMaxPodCount, defaultNamespace) {
     public override fun loadConfig(src: String): List<ScalerConfig> {
         return super.loadConfig(src)
     }

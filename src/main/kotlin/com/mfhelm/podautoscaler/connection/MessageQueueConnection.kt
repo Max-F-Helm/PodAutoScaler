@@ -7,16 +7,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-internal class MessageQueueConnection {
-
-    @Value("\${spring.rabbitmq.host}")
-    private lateinit var rabbitHost: String
-    @Value("\${spring.rabbitmq.port}")
-    private var rabbitPort: Int = 0
-    @Value("\${spring.rabbitmq.username}")
-    private lateinit var rabbitUser: String
-    @Value("\${spring.rabbitmq.password}")
-    private lateinit var rabbitPassword: String
+internal class MessageQueueConnection(
+    @Value("\${spring.rabbitmq.host}") private val rabbitHost: String,
+    @Value("\${spring.rabbitmq.port}") private val rabbitPort: Int,
+    @Value("\${spring.rabbitmq.username}") private val rabbitUser: String,
+    @Value("\${spring.rabbitmq.password}") private val rabbitPassword: String
+) {
 
     private val vHostConnections: HashMap<String, AmqpAdmin> = HashMap()
 
