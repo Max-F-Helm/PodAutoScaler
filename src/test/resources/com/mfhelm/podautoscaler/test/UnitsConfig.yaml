@@ -1,0 +1,42 @@
+-
+  label: A
+  deploymentNamespace: NS-A
+  deployment: P-A
+  interval: 10s
+  queues:
+    - virtualHost: VH-A
+      name: Q-A
+      ruleset:
+        type: limit
+        rules:
+          -
+            minMessageCount: 0
+            podCount: 1
+-
+  label: B
+  deploymentNamespace: NS-A
+  deployment: P-A
+  interval: 10m
+  queues:
+    - virtualHost: VH-A
+      name: Q-A
+      ruleset:
+        type: limit
+        rules:
+          -
+            minMessageCount: 1k
+            podCount: 1
+-
+  label: C
+  deploymentNamespace: NS-A
+  deployment: P-A
+  interval: 10d
+  queues:
+    - virtualHost: VH-A
+      name: Q-A
+      ruleset:
+        type: limit
+        rules:
+          -
+            minMessageCount: 1m
+            podCount: 1

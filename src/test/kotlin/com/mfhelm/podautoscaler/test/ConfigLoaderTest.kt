@@ -15,64 +15,17 @@ class ConfigLoaderTest {
     @Autowired
     private lateinit var loader: ConfigLoaderBinding
 
+    private fun readConfig(name: String): String{
+        val res = ConfigLoaderTest::class.java.getResource("${name}.yaml")
+        if(res === null){
+            throw AssertionError("test-resource $name not found")
+        }
+        return res.readText()
+    }
+
     @Test
     fun loadConfigWithLimitRuleset(){
-        val configString = """
-            -
-              label: A
-              deploymentNamespace: NS-A
-              deployment: P-A
-              interval: 10
-              queues:
-                -
-                  virtualHost: VH-A
-                  name: Q-A
-                  ruleset:
-                    type: limit
-                    rules:
-                      -
-                        minMessageCount: 0
-                        podCount: 1
-                      -
-                        minMessageCount: 100
-                        podCount: 2
-                      -
-                        minMessageCount: 200
-                        podCount: 3
-                -
-                  virtualHost: VH-A2
-                  name: Q-A2
-                  ruleset:
-                    type: limit
-                    rules:
-                      -
-                        minMessageCount: 0
-                        podCount: 1
-                      -
-                        minMessageCount: 100
-                        podCount: 2
-                      -
-                        minMessageCount: 200
-                        podCount: 3
-            -
-              deployment: P-B
-              interval: 60
-              queues:
-                -
-                  name: Q-B
-                  ruleset:
-                    type: limit
-                    rules:
-                      -
-                        minMessageCount: 0
-                        podCount: 1
-                      -
-                        minMessageCount: 200
-                        podCount: 2
-                      -
-                        minMessageCount: 500
-                        podCount: 4
-        """.trimIndent()
+        val configString = readConfig("LimitRuleset")
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
@@ -112,37 +65,7 @@ class ConfigLoaderTest {
 
     @Test
     fun loadConfigWithLinearScaleRuleset(){
-        val configString = """
-            -
-              label: A
-              deploymentNamespace: NS-A
-              deployment: P-A
-              interval: 10
-              queues:
-                -
-                  virtualHost: VH-A
-                  name: Q-A
-                  ruleset:
-                    type: linearScale
-                    rules:
-                      -
-                        factor: 0.1
-                        stepThreshold: 2
-                        minPodCount: 2
-                        maxPodCount: 20
-            -
-              deploymentNamespace: NS-B
-              deployment: P-B
-              interval: 60
-              queues:
-                -
-                  name: Q-B
-                  ruleset:
-                    type: linearScale
-                    rules:
-                      -
-                        factor: 1
-        """.trimIndent()
+        val configString = readConfig("LinearScaleRuleset")
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
@@ -170,37 +93,7 @@ class ConfigLoaderTest {
 
     @Test
     fun loadConfigWithLogarithmicScaleRuleset(){
-        val configString = """
-            -
-              label: A
-              deploymentNamespace: NS-A
-              deployment: P-A
-              interval: 10
-              queues:
-                -
-                  virtualHost: VH-A
-                  name: Q-A
-                  ruleset:
-                    type: logScale
-                    rules:
-                      -
-                        base: 10
-                        stepThreshold: 2
-                        minPodCount: 2
-                        maxPodCount: 20
-            -
-              deploymentNamespace: NS-B
-              deployment: P-B
-              interval: 60
-              queues:
-                -
-                  name: Q-B
-                  ruleset:
-                    type: logScale
-                    rules:
-                      -
-                        base: 10
-        """.trimIndent()
+        val configString = readConfig("LogarithmicScaleConfig")
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{
@@ -228,50 +121,7 @@ class ConfigLoaderTest {
 
     @Test
     fun loadConfigWithUnits(){
-        val configString = """
-            -
-              label: A
-              deploymentNamespace: NS-A
-              deployment: P-A
-              interval: 10s
-              queues:
-                - virtualHost: VH-A
-                  name: Q-A
-                  ruleset:
-                    type: limit
-                    rules:
-                      -
-                        minMessageCount: 0
-                        podCount: 1
-            -
-              label: B
-              deploymentNamespace: NS-A
-              deployment: P-A
-              interval: 10m
-              queues:
-                - virtualHost: VH-A
-                  name: Q-A
-                  ruleset:
-                    type: limit
-                    rules:
-                      -
-                        minMessageCount: 1k
-                        podCount: 1
-            -
-              label: C
-              deploymentNamespace: NS-A
-              deployment: P-A
-              interval: 10d
-              queues:
-                - virtualHost: VH-A
-                  name: Q-A
-                  ruleset:
-                    type: limit
-                    rules:
-                      -
-                        minMessageCount: 1m
-                        podCount: 1
-        """.trimIndent()
+        val configString = readConfig("UnitsConfig")
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply{

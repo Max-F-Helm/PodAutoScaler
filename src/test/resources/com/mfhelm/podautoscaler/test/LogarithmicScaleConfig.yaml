@@ -1,0 +1,29 @@
+-
+  label: A
+  deploymentNamespace: NS-A
+  deployment: P-A
+  interval: 10
+  queues:
+    -
+      virtualHost: VH-A
+      name: Q-A
+      ruleset:
+        type: logScale
+        rules:
+          -
+            base: 10
+            stepThreshold: 2
+            minPodCount: 2
+            maxPodCount: 20
+-
+  deploymentNamespace: NS-B
+  deployment: P-B
+  interval: 60
+  queues:
+    -
+      name: Q-B
+      ruleset:
+        type: logScale
+        rules:
+          -
+            base: 10
