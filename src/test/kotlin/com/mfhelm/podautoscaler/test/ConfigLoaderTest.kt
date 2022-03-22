@@ -1,6 +1,7 @@
 package com.mfhelm.podautoscaler.test
 
 import com.mfhelm.podautoscaler.scaler.config.*
+import com.mfhelm.podautoscaler.scaler.config.ruleset.*
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value

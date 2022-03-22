@@ -4,6 +4,7 @@ import com.mfhelm.podautoscaler.connection.KubernetesConnection
 import com.mfhelm.podautoscaler.connection.MessageQueueConnection
 import com.mfhelm.podautoscaler.scaler.Scaler
 import com.mfhelm.podautoscaler.scaler.config.*
+import com.mfhelm.podautoscaler.scaler.config.ruleset.*
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

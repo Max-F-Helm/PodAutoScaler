@@ -1,7 +1,7 @@
 package com.mfhelm.podautoscaler.test
 
-import com.mfhelm.podautoscaler.scaler.config.LimitRule
-import com.mfhelm.podautoscaler.scaler.config.LimitRuleset
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRuleset
 import org.junit.jupiter.api.*
 import kotlin.test.assertEquals
 

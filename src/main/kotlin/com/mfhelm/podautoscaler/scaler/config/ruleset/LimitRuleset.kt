@@ -1,4 +1,4 @@
-package com.mfhelm.podautoscaler.scaler.config
+package com.mfhelm.podautoscaler.scaler.config.ruleset
 
 import java.util.Objects
 

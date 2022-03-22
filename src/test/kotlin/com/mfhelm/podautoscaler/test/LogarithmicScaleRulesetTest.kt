@@ -1,7 +1,7 @@
 package com.mfhelm.podautoscaler.test
 
-import com.mfhelm.podautoscaler.scaler.config.LogarithmicScaleRule
-import com.mfhelm.podautoscaler.scaler.config.LogarithmicScaleRuleset
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LogarithmicScaleRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LogarithmicScaleRuleset
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
