@@ -208,7 +208,12 @@ internal class ConfigLoaderBinding(
     @Value("\${defaults.maxPodCount}") private val defaultMaxPodCount: Int,
     @Value("\${NAMESPACE:}") private val defaultNamespace: String
 ) : ConfigLoader(configString, defaultMinPodCount, defaultMaxPodCount, defaultNamespace) {
+
     public override fun loadConfig(src: String): List<ScalerConfig> {
         return super.loadConfig(src)
+    }
+
+    fun setConfig(conf: List<ScalerConfig>){
+        configEntries = conf
     }
 }
