@@ -23,8 +23,8 @@ internal class ConfigLoader(
     @Value("\${NAMESPACE:}") private val defaultNamespace: String
 ) {
 
-    internal final lateinit var configEntries: List<ScalerConfig>
-        private set
+    final lateinit var configEntries: List<ScalerConfig>
+        protected set// protected for tests
 
     @PostConstruct
     private fun init() {

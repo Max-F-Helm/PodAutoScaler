@@ -4,18 +4,13 @@ import com.mfhelm.podautoscaler.connection.KubernetesConnection
 import com.mfhelm.podautoscaler.connection.MessageQueueConnection
 import com.mfhelm.podautoscaler.getLogger
 import com.mfhelm.podautoscaler.scaler.config.ScalerConfig
-import org.springframework.beans.factory.config.ConfigurableBeanFactory
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
-@Component(value = "Scaler")
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 internal class Scaler(
     private val messageQueueConnection: MessageQueueConnection,
-    private val kubernetesConnection: KubernetesConnection
+    private val kubernetesConnection: KubernetesConnection,
+    internal val config: ScalerConfig// internal for tests
 ) : Runnable {
-
-    internal lateinit var config: ScalerConfig
 
     private val logger = getLogger(Scaler::class.java)
 
@@ -56,5 +51,16 @@ internal class Scaler(
         } catch (e: Exception) {
             logger.error("exception for ${config.label}", e)
         }
+    }
+}
+
+@Component
+internal class ScalerFactory(
+    private val messageQueueConnection: MessageQueueConnection,
+    private val kubernetesConnection: KubernetesConnection
+){
+
+    fun newScaler(config: ScalerConfig): Scaler{
+        return Scaler(messageQueueConnection, kubernetesConnection, config)
     }
 }

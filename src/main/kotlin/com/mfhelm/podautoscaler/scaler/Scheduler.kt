@@ -1,9 +1,6 @@
 package com.mfhelm.podautoscaler.scaler
 
 import com.mfhelm.podautoscaler.scaler.config.ConfigLoader
-import org.springframework.beans.factory.BeanFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.SchedulingConfigurer
 import org.springframework.scheduling.config.ScheduledTaskRegistrar
 import org.springframework.stereotype.Component
@@ -11,7 +8,7 @@ import java.util.concurrent.Executors
 
 @Component
 internal class Scheduler(
-    private val beanFactory: BeanFactory,
+    private val scalerFactory: ScalerFactory,
     private val configLoader: ConfigLoader
 ) : SchedulingConfigurer {
 
@@ -21,8 +18,7 @@ internal class Scheduler(
 
         // schedule each scaler
         configLoader.configEntries.forEach {
-            val scaler = beanFactory.getBean("Scaler", Scaler::class.java)
-            scaler.config = it
+            val scaler = scalerFactory.newScaler(it)
             taskRegistrar.addFixedRateTask(scaler, it.interval * 1000)
         }
     }

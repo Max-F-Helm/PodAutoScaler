@@ -112,7 +112,7 @@ class ConfigLoaderTest {
 
     @Test
     fun loadConfigWithLogarithmicScaleRuleset() {
-        val configString = readConfig("LogarithmicScaleConfig")
+        val configString = readConfig("LogarithmicScaleRuleset")
 
         val config = loader.loadConfig(configString)
         val expectedConfig = ArrayList<ScalerConfig>().apply {

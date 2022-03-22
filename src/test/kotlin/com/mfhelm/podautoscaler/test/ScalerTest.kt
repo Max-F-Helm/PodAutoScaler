@@ -92,8 +92,7 @@ class ScalerTest {
         every { queueConnection.getQueueMessageCount(queue.virtualHost, queue.name) } returns 105
         every { kubernetesConnection.getPodCount(limitConfig.deploymentNamespace, limitConfig.deployment) } returns 1
 
-        val scaler = Scaler(queueConnection, kubernetesConnection)
-        scaler.config = limitConfig
+        val scaler = Scaler(queueConnection, kubernetesConnection, limitConfig)
 
         scaler.run()
 
@@ -116,8 +115,7 @@ class ScalerTest {
         every { queueConnection.getQueueMessageCount(queue.virtualHost, queue.name) } returns 105
         every { kubernetesConnection.getPodCount(limitConfig.deploymentNamespace, limitConfig.deployment) } returns 2
 
-        val scaler = Scaler(queueConnection, kubernetesConnection)
-        scaler.config = limitConfig
+        val scaler = Scaler(queueConnection, kubernetesConnection, limitConfig)
 
         scaler.run()
 
@@ -144,8 +142,7 @@ class ScalerTest {
             )
         } returns 2
 
-        val scaler = Scaler(queueConnection, kubernetesConnection)
-        scaler.config = linearScaleConfig
+        val scaler = Scaler(queueConnection, kubernetesConnection, linearScaleConfig)
 
         scaler.run()
 
@@ -173,8 +170,7 @@ class ScalerTest {
             )
         } returns 2
 
-        val scaler = Scaler(queueConnection, kubernetesConnection)
-        scaler.config = linearScaleConfig
+        val scaler = Scaler(queueConnection, kubernetesConnection, linearScaleConfig)
 
         scaler.run()
 
@@ -201,8 +197,7 @@ class ScalerTest {
             )
         } returns 5
 
-        val scaler = Scaler(queueConnection, kubernetesConnection)
-        scaler.config = logarithmicScaleConfig
+        val scaler = Scaler(queueConnection, kubernetesConnection, logarithmicScaleConfig)
 
         scaler.run()
 
@@ -230,8 +225,7 @@ class ScalerTest {
             )
         } returns 2
 
-        val scaler = Scaler(queueConnection, kubernetesConnection)
-        scaler.config = logarithmicScaleConfig
+        val scaler = Scaler(queueConnection, kubernetesConnection, logarithmicScaleConfig)
 
         scaler.run()
 
@@ -255,8 +249,7 @@ class ScalerTest {
             )
         } returns 0
 
-        val scaler = Scaler(queueConnection, kubernetesConnection)
-        scaler.config = multiQueueConfig
+        val scaler = Scaler(queueConnection, kubernetesConnection, multiQueueConfig)
 
         every {
             queueConnection.getQueueMessageCount(
