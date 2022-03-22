@@ -13,7 +13,7 @@ internal class LinearScaleRuleset(override val type: String, internal val rule: 
     override fun computePodCount(messageCount: Int, currentPodCount: Int): Int {
         val newCount = (messageCount * rule.factor).roundToInt().coerceIn(rule.minPodCount, rule.maxPodCount)
         val overThreshold = abs(currentPodCount - newCount) >= rule.stepThreshold
-        return if (overThreshold) newCount else -1
+        return if (overThreshold) newCount else currentPodCount
     }
 
     override fun equals(other: Any?): Boolean {

@@ -58,13 +58,13 @@ class LinearScaleRulesetTest {
     @Test
     fun testLinearScale_noChange() {
         val ruleset1 = LinearScaleRuleset("linearScale", LinearScaleRule(0.1, 1, 1, 50))
-        assertEquals(-1, ruleset1.computePodCount(1, 1))
-        assertEquals(-1, ruleset1.computePodCount(12, 1))
-        assertEquals(-1, ruleset1.computePodCount(15, 2))
-        assertEquals(-1, ruleset1.computePodCount(198, 20))
-        assertEquals(-1, ruleset1.computePodCount(204, 20))
+        assertEquals(1, ruleset1.computePodCount(1, 1))
+        assertEquals(1, ruleset1.computePodCount(12, 1))
+        assertEquals(2, ruleset1.computePodCount(15, 2))
+        assertEquals(20, ruleset1.computePodCount(198, 20))
+        assertEquals(20, ruleset1.computePodCount(204, 20))
 
         val ruleset2 = LinearScaleRuleset("linearScale", LinearScaleRule(0.1, 5, 1, 50))
-        assertEquals(-1, ruleset2.computePodCount(70, 10))
+        assertEquals(10, ruleset2.computePodCount(70, 10))
     }
 }

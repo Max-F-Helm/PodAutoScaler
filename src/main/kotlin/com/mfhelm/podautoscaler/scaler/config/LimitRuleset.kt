@@ -28,7 +28,7 @@ internal class LimitRuleset(override val type: String, rules: List<LimitRule>) :
 
     override fun computePodCount(messageCount: Int, currentPodCount: Int): Int {
         // find rule with largest minMessageCount where minMessageCount >= messageCount
-        // use binary search
+        // use binary search (just for fun)
         var newCount = -1
         var l = 0
         var r = limits.size
@@ -63,7 +63,7 @@ internal class LimitRuleset(override val type: String, rules: List<LimitRule>) :
             throw AssertionError("this algorithm is broken")
         }
 
-        return if (newCount != currentPodCount) newCount else -1
+        return newCount
     }
 
     override fun equals(other: Any?): Boolean {

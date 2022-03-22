@@ -15,7 +15,7 @@ internal class LogarithmicScaleRuleset(override val type: String, internal val r
         val newCount = log(messageCount.toDouble(), rule.base).roundToInt()
             .coerceIn(rule.minPodCount, rule.maxPodCount)
         val overThreshold = abs(currentPodCount - newCount) >= rule.stepThreshold
-        return if (overThreshold) newCount else -1
+        return if (overThreshold) newCount else currentPodCount
     }
 
     override fun equals(other: Any?): Boolean {

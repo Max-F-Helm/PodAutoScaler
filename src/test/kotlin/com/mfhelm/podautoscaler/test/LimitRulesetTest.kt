@@ -100,9 +100,9 @@ class LimitRulesetTest {
 
     @Test
     fun testLimit_noChange() {
-        assertEquals(-1, ruleSet.computePodCount(0, 1))
-        assertEquals(-1, ruleSet.computePodCount(12, 1))
-        assertEquals(-1, ruleSet.computePodCount(1000, 6))
+        assertEquals(1, ruleSet.computePodCount(0, 1))
+        assertEquals(1, ruleSet.computePodCount(12, 1))
+        assertEquals(6, ruleSet.computePodCount(1000, 6))
     }
 
     @Test
