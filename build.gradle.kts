@@ -1,5 +1,6 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 plugins {
     id("org.springframework.boot") version "2.6.4"
@@ -12,6 +13,7 @@ plugins {
 
     id("com.diffplug.spotless") version "6.3.0"
     id("io.gitlab.arturbosch.detekt") version "1.19.0"
+    id("com.github.ben-manes.versions") version "0.42.0"
 }
 
 group = "com.mfhelm.podautoscaler"
@@ -31,7 +33,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("io.fabric8:kubernetes-client:5.12.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
@@ -111,6 +113,14 @@ tasks {
             xml.required.set(false)
             sarif.required.set(false)
         }
+    }
+
+    named<DependencyUpdatesTask>("dependencyUpdates") {
+        group = "verification"
+        description = "Checks if dependencies are up-to-date"
+
+        outputDir = "$buildDir/reports/dependencyUpdates"
+        reportfileName = "updates"
     }
 
     named<Jar>("jar") {
