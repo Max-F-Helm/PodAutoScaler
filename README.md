@@ -50,7 +50,7 @@ The configuration has the following format:
 ````yaml
 -
   label: "<name for this conf entry (e.g. for logs)>; optional (default is '_unnamed_')"
-  deploymentNamespace: "<kubernetes namespace>; optional (default is value of environment-var 'NAMESPACE')"
+  deploymentNamespace: "<kubernetes namespace>; optional (*2)"
   deployment: "<name of the deployment to scale>"
   interval: "<interval in which the queue should be checked>; number | string>"
   queues:
@@ -75,6 +75,7 @@ The configuration has the following format:
               maxPodCount: "<upper limit for podCount>; number; optional (default: 10)"
 ````
 
+- *2: default is the value of the java-property 'namespace' or (if not set) the value of the environment-var 'NAMESPACE'
 - value of `interval`: can be a number (in seconds) or a string of the following format &lt;value&gt;s|m|h|d 
     where s means seconds, m minutes, h hours and d days
 - limit ruleset:

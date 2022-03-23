@@ -26,7 +26,7 @@ class ConfigLoaderTest {
         @BeforeAll
         @JvmStatic
         fun setupProperties() {
-            System.setProperty("NAMESPACE", "nsp")
+            System.setProperty("namespace", "nsp")
         }
     }
 

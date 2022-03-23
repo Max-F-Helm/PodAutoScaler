@@ -19,7 +19,8 @@ internal class ScalerConfig(
         this.label = label ?: DEFAULT_LABEL
 
         this.deploymentNamespace = deploymentNamespace
-            ?: System.getProperty("NAMESPACE")
+            ?: System.getProperty("namespace")
+            ?: System.getenv("NAMESPACE")
             ?: throw NoSuchElementException("missing parameter 'deploymentNamespace' and no default is present")
     }
 
