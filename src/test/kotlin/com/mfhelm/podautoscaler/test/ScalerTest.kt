@@ -22,7 +22,7 @@ class ScalerTest {
         setOf(
             QueueConfig(
                 "VH-A", "Q-A",
-                LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                LimitRuleset(ArrayList<LimitRule>().apply {
                     add(LimitRule(0, 1))
                     add(LimitRule(100, 2))
                     add(LimitRule(200, 3))
@@ -36,7 +36,6 @@ class ScalerTest {
             QueueConfig(
                 "VH-B", "Q-B",
                 LinearScaleRuleset(
-                    "linearScale",
                     LinearScaleRule(0.1, 2, 2, 20)
                 )
             )
@@ -48,7 +47,6 @@ class ScalerTest {
             QueueConfig(
                 "VH-C", "Q-C",
                 LogarithmicScaleRuleset(
-                    "logScale",
                     LogarithmicScaleRule(10.0, 2, 2, 20)
                 )
             )
@@ -57,7 +55,7 @@ class ScalerTest {
 
     private val multiQueueQueues = listOf(
         QueueConfig("VH-D1", "Q-D1",
-            LimitRuleset("limit", ArrayList<LimitRule>().apply {
+            LimitRuleset(ArrayList<LimitRule>().apply {
                 add(LimitRule(0, 1))
                 add(LimitRule(100, 2))
                 add(LimitRule(200, 3))
@@ -65,7 +63,7 @@ class ScalerTest {
         ),
         QueueConfig(
             "VH-D2", "Q-D2",
-            LinearScaleRuleset("linearScale", LinearScaleRule(0.005, 1, 1, 20))
+            LinearScaleRuleset(LinearScaleRule(0.005, 1, 1, 20))
         )
     )
     private val multiQueueConfig = ScalerConfig(
@@ -80,7 +78,7 @@ class ScalerTest {
 
     @Test
     fun scaleLimit() {
-        val queue = limitConfig.queueSet.first()
+        val queue = limitConfig.queues.first()
 
         val podCount = slot<Int>()
         every {
@@ -103,7 +101,7 @@ class ScalerTest {
 
     @Test
     fun scaleLimit_noScaling() {
-        val queue = limitConfig.queueSet.first()
+        val queue = limitConfig.queues.first()
 
         val podCount = slot<Int>()
         every {
@@ -125,7 +123,7 @@ class ScalerTest {
 
     @Test
     fun scaleLinearScale() {
-        val queue = linearScaleConfig.queueSet.first()
+        val queue = linearScaleConfig.queues.first()
 
         val podCount = slot<Int>()
         every {
@@ -153,7 +151,7 @@ class ScalerTest {
 
     @Test
     fun scaleLinearScale_noScaling() {
-        val queue = linearScaleConfig.queueSet.first()
+        val queue = linearScaleConfig.queues.first()
 
         val podCount = slot<Int>()
         every {
@@ -180,7 +178,7 @@ class ScalerTest {
 
     @Test
     fun scaleLogarithmicScale() {
-        val queue = logarithmicScaleConfig.queueSet.first()
+        val queue = logarithmicScaleConfig.queues.first()
 
         val podCount = slot<Int>()
         every {
@@ -208,7 +206,7 @@ class ScalerTest {
 
     @Test
     fun scaleLogarithmicScale_noScaling() {
-        val queue = logarithmicScaleConfig.queueSet.first()
+        val queue = logarithmicScaleConfig.queues.first()
 
         val podCount = slot<Int>()
         every {

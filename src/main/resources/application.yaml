@@ -23,7 +23,3 @@ management:
     web:
       exposure:
         include: info, health, metrics, prometheus
-
-defaults:
-  minPodCount: 1
-  maxPodCount: 10

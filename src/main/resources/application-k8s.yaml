@@ -6,7 +6,3 @@ spring:
     port: ${pas-rabbitmq-port}
     username: ${pas-rabbitmq-user}
     password: ${rabbitmq-password}
-
-defaults:
-  minPodCount: 1
-  maxPodCount: 10

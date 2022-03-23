@@ -11,8 +11,16 @@ import org.springframework.test.context.TestPropertySource
 import kotlin.test.assertEquals
 
 @SpringBootTest
-@TestPropertySource(properties = ["config = ", "NAMESPACE = nsp"])
+@TestPropertySource(properties = ["config = "])
 class ConfigLoaderTest {
+
+    companion object{
+        @BeforeAll
+        @JvmStatic
+        fun setupProperties(){
+            System.setProperty("NAMESPACE", "nsp")
+        }
+    }
 
     @Autowired
     private lateinit var loader: ConfigLoaderBinding
@@ -37,7 +45,7 @@ class ConfigLoaderTest {
                     setOf(
                         QueueConfig(
                             "VH-A", "Q-A",
-                            LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            LimitRuleset(ArrayList<LimitRule>().apply {
                                 add(LimitRule(0, 1))
                                 add(LimitRule(100, 2))
                                 add(LimitRule(200, 3))
@@ -45,7 +53,7 @@ class ConfigLoaderTest {
                         ),
                         QueueConfig(
                             "VH-A2", "Q-A2",
-                            LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            LimitRuleset(ArrayList<LimitRule>().apply {
                                 add(LimitRule(0, 1))
                                 add(LimitRule(100, 2))
                                 add(LimitRule(200, 3))
@@ -59,7 +67,7 @@ class ConfigLoaderTest {
                     "_unnamed_", "nsp", "P-B", 60,
                     setOf(
                         QueueConfig("/", "Q-B",
-                            LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            LimitRuleset(ArrayList<LimitRule>().apply {
                                 add(LimitRule(0, 1))
                                 add(LimitRule(200, 2))
                                 add(LimitRule(500, 4))
@@ -86,7 +94,6 @@ class ConfigLoaderTest {
                         QueueConfig(
                             "VH-A", "Q-A",
                             LinearScaleRuleset(
-                                "linearScale",
                                 LinearScaleRule(0.1, 2, 2, 20)
                             )
                         )
@@ -100,7 +107,6 @@ class ConfigLoaderTest {
                         QueueConfig(
                             "/", "Q-B",
                             LinearScaleRuleset(
-                                "linearScale",
                                 LinearScaleRule(1.0, 1, 1, 10)
                             )
                         )
@@ -124,7 +130,6 @@ class ConfigLoaderTest {
                         QueueConfig(
                             "VH-A", "Q-A",
                             LogarithmicScaleRuleset(
-                                "logScale",
                                 LogarithmicScaleRule(10.0, 2, 2, 20)
                             )
                         )
@@ -138,7 +143,6 @@ class ConfigLoaderTest {
                         QueueConfig(
                             "/", "Q-B",
                             LogarithmicScaleRuleset(
-                                "logScale",
                                 LogarithmicScaleRule(10.0, 1, 1, 10)
                             )
                         )
@@ -162,7 +166,7 @@ class ConfigLoaderTest {
                     setOf(
                         QueueConfig(
                             "VH-A", "Q-A",
-                            LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            LimitRuleset(ArrayList<LimitRule>().apply {
                                 add(LimitRule(0, 1))
                             })
                         )
@@ -176,7 +180,7 @@ class ConfigLoaderTest {
                     setOf(
                         QueueConfig(
                             "VH-A", "Q-A",
-                            LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            LimitRuleset(ArrayList<LimitRule>().apply {
                                 add(LimitRule(1000, 1))
                             })
                         )
@@ -190,7 +194,7 @@ class ConfigLoaderTest {
                     setOf(
                         QueueConfig(
                             "VH-A", "Q-A",
-                            LimitRuleset("limit", ArrayList<LimitRule>().apply {
+                            LimitRuleset(ArrayList<LimitRule>().apply {
                                 add(LimitRule(1000000, 1))
                             })
                         )
@@ -204,11 +208,8 @@ class ConfigLoaderTest {
 
 @Component
 internal class ConfigLoaderBinding(
-    @Value("\${config}") private val configString: String,
-    @Value("\${defaults.minPodCount}") private val defaultMinPodCount: Int,
-    @Value("\${defaults.maxPodCount}") private val defaultMaxPodCount: Int,
-    @Value("\${NAMESPACE:}") private val defaultNamespace: String
-) : ConfigLoader(configString, defaultMinPodCount, defaultMaxPodCount, defaultNamespace) {
+    @Value("\${config}") private val configString: String
+) : ConfigLoader(configString) {
 
     public override fun loadConfig(src: String): List<ScalerConfig> {
         return super.loadConfig(src)

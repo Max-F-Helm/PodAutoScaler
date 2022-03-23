@@ -9,7 +9,7 @@ class LogarithmicScaleRulesetTest {
 
     @Test
     fun testLogarithmicScale_base_10() {
-        val ruleset = LogarithmicScaleRuleset("logScale", LogarithmicScaleRule(10.0, 1, 1, 50))
+        val ruleset = LogarithmicScaleRuleset(LogarithmicScaleRule(10.0, 1, 1, 50))
         assertEquals(1, ruleset.computePodCount(1, 9999))
         assertEquals(1, ruleset.computePodCount(12, 9999))
         assertEquals(2, ruleset.computePodCount(99, 9999))
@@ -19,7 +19,7 @@ class LogarithmicScaleRulesetTest {
 
     @Test
     fun testLogarithmicScale_baseClamped_1() {
-        val ruleset = LogarithmicScaleRuleset("linearScale", LogarithmicScaleRule(10.0, 1, 1, 3))
+        val ruleset = LogarithmicScaleRuleset(LogarithmicScaleRule(10.0, 1, 1, 3))
         assertEquals(1, ruleset.computePodCount(1, 9999))
         assertEquals(2, ruleset.computePodCount(100, 9999))
         assertEquals(3, ruleset.computePodCount(1001, 9999))
@@ -28,7 +28,7 @@ class LogarithmicScaleRulesetTest {
 
     @Test
     fun testLogarithmicScale_baseClamped_2() {
-        val ruleset = LogarithmicScaleRuleset("linearScale", LogarithmicScaleRule(10.0, 1, 2, 3))
+        val ruleset = LogarithmicScaleRuleset(LogarithmicScaleRule(10.0, 1, 2, 3))
         assertEquals(2, ruleset.computePodCount(1, 9999))
         assertEquals(2, ruleset.computePodCount(100, 9999))
         assertEquals(3, ruleset.computePodCount(1001, 9999))
@@ -37,14 +37,14 @@ class LogarithmicScaleRulesetTest {
 
     @Test
     fun testLogarithmicScale_baseStep_2() {
-        val ruleset = LogarithmicScaleRuleset("linearScale", LogarithmicScaleRule(5.0, 2, 1, 50))
+        val ruleset = LogarithmicScaleRuleset(LogarithmicScaleRule(5.0, 2, 1, 50))
         assertEquals(3, ruleset.computePodCount(200, 9999))
         assertEquals(4, ruleset.computePodCount(500, 2))
     }
 
     @Test
     fun testLogarithmicScale_baseStepClamped_5() {
-        val ruleset = LogarithmicScaleRuleset("linearScale", LogarithmicScaleRule(2.0, 5, 2, 10))
+        val ruleset = LogarithmicScaleRuleset(LogarithmicScaleRule(2.0, 5, 2, 10))
         assertEquals(2, ruleset.computePodCount(1, 9999))
         assertEquals(7, ruleset.computePodCount(100, 1))
         assertEquals(7, ruleset.computePodCount(100, 2))
@@ -54,12 +54,12 @@ class LogarithmicScaleRulesetTest {
 
     @Test
     fun testLogarithmicScale_noChange() {
-        val ruleset1 = LogarithmicScaleRuleset("linearScale", LogarithmicScaleRule(10.0, 1, 1, 50))
+        val ruleset1 = LogarithmicScaleRuleset(LogarithmicScaleRule(10.0, 1, 1, 50))
         assertEquals(1, ruleset1.computePodCount(1, 1))
         assertEquals(1, ruleset1.computePodCount(12, 1))
         assertEquals(2, ruleset1.computePodCount(101, 2))
 
-        val ruleset2 = LogarithmicScaleRuleset("linearScale", LogarithmicScaleRule(5.0, 2, 1, 50))
+        val ruleset2 = LogarithmicScaleRuleset(LogarithmicScaleRule(5.0, 2, 1, 50))
         assertEquals(3, ruleset2.computePodCount(500, 3))
     }
 }

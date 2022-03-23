@@ -21,7 +21,7 @@ internal class Scaler(
 
             logger.trace("${config.label}: updating podCount (current podCount: $currentPodCount)")
 
-            val newPodCount = config.queueSet.map(computeMapper(currentPodCount)).maxOf { it }
+            val newPodCount = config.queues.map(computeMapper(currentPodCount)).maxOf { it }
 
             if (newPodCount.count != currentPodCount) {
                 kubernetesConnection.setPodCount(config.deploymentNamespace, config.deployment, newPodCount.count)

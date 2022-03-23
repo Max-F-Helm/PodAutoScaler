@@ -1,10 +1,13 @@
 package com.mfhelm.podautoscaler.scaler.config.ruleset
 
+import com.mfhelm.podautoscaler.scaler.config.DEFAULT_MAX_POD_COUNT
+import com.mfhelm.podautoscaler.scaler.config.DEFAULT_MIN_POD_COUNT
+import com.mfhelm.podautoscaler.scaler.config.DEFAULT_STEP_THRESHOLD
 import java.util.Objects
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-internal class LinearScaleRuleset(override val type: String, internal val rule: LinearScaleRule) : Ruleset {
+internal class LinearScaleRuleset(internal val rule: LinearScaleRule) : Ruleset {
 
     companion object {
         const val TYPE = "linearScale"
@@ -28,11 +31,11 @@ internal class LinearScaleRuleset(override val type: String, internal val rule: 
             return false
         }
 
-        return other.type == type && other.rule == rule
+        return other.rule == rule
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(LinearScaleRuleset::class.qualifiedName, type, rule)
+        return Objects.hash(LinearScaleRuleset::class.qualifiedName, rule)
     }
 
     override fun toString(): String {
@@ -42,7 +45,7 @@ internal class LinearScaleRuleset(override val type: String, internal val rule: 
 
 internal data class LinearScaleRule(
     internal val factor: Double,
-    internal val stepThreshold: Int,
-    internal val minPodCount: Int,
-    internal val maxPodCount: Int
+    internal val stepThreshold: Int = DEFAULT_STEP_THRESHOLD,
+    internal val minPodCount: Int = DEFAULT_MIN_POD_COUNT,
+    internal val maxPodCount: Int = DEFAULT_MAX_POD_COUNT
 )

@@ -1,8 +1,10 @@
 package com.mfhelm.podautoscaler.scaler.config.ruleset
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.mfhelm.podautoscaler.scaler.config.CountValueDeserializer
 import java.util.Objects
 
-internal class LimitRuleset(override val type: String, rules: List<LimitRule>) : Ruleset {
+internal class LimitRuleset(rules: List<LimitRule>) : Ruleset {
 
     companion object {
         const val TYPE = "limit"
@@ -78,11 +80,11 @@ internal class LimitRuleset(override val type: String, rules: List<LimitRule>) :
             return false
         }
 
-        return other.type == type && other.limits.contentEquals(limits)
+        return other.limits.contentEquals(limits)
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(LimitRuleset::class.qualifiedName, type, limits.contentHashCode())
+        return Objects.hash(LimitRuleset::class.qualifiedName, limits.contentHashCode())
     }
 
     override fun toString(): String {
@@ -90,4 +92,7 @@ internal class LimitRuleset(override val type: String, rules: List<LimitRule>) :
     }
 }
 
-internal data class LimitRule(internal val minMessageCount: Int, internal val podCount: Int)
+internal data class LimitRule(
+    @JsonDeserialize(using = CountValueDeserializer::class) internal val minMessageCount: Int,
+    internal val podCount: Int
+)

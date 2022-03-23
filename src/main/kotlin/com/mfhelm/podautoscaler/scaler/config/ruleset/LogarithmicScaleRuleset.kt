@@ -1,11 +1,14 @@
 package com.mfhelm.podautoscaler.scaler.config.ruleset
 
+import com.mfhelm.podautoscaler.scaler.config.DEFAULT_MAX_POD_COUNT
+import com.mfhelm.podautoscaler.scaler.config.DEFAULT_MIN_POD_COUNT
+import com.mfhelm.podautoscaler.scaler.config.DEFAULT_STEP_THRESHOLD
 import java.util.Objects
 import kotlin.math.abs
 import kotlin.math.log
 import kotlin.math.roundToInt
 
-internal class LogarithmicScaleRuleset(override val type: String, internal val rule: LogarithmicScaleRule) : Ruleset {
+internal class LogarithmicScaleRuleset(internal val rule: LogarithmicScaleRule) : Ruleset {
 
     companion object {
         const val TYPE = "logScale"
@@ -30,11 +33,11 @@ internal class LogarithmicScaleRuleset(override val type: String, internal val r
             return false
         }
 
-        return other.type == type && other.rule == rule
+        return other.rule == rule
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(LogarithmicScaleRuleset::class.qualifiedName, type, rule)
+        return Objects.hash(LogarithmicScaleRuleset::class.qualifiedName, rule)
     }
 
     override fun toString(): String {
@@ -44,7 +47,7 @@ internal class LogarithmicScaleRuleset(override val type: String, internal val r
 
 internal data class LogarithmicScaleRule(
     internal val base: Double,
-    internal val stepThreshold: Int,
-    internal val minPodCount: Int,
-    internal val maxPodCount: Int
+    internal val stepThreshold: Int = DEFAULT_STEP_THRESHOLD,
+    internal val minPodCount: Int = DEFAULT_MIN_POD_COUNT,
+    internal val maxPodCount: Int = DEFAULT_MAX_POD_COUNT
 )

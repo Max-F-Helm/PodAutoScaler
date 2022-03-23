@@ -1,8 +1,10 @@
 package com.mfhelm.podautoscaler.scaler.config.ruleset
 
-internal interface Ruleset {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.mfhelm.podautoscaler.scaler.config.RulesetDeserializer
 
-    val type: String
+@JsonDeserialize(using = RulesetDeserializer::class)
+internal interface Ruleset {
 
     /**
      * computes the new pod-count using the rules in this ruleset

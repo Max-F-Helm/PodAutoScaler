@@ -13,7 +13,7 @@ class LimitRulesetTest {
         @BeforeAll
         @JvmStatic
         fun init() {
-            ruleSet = LimitRuleset("limit", ArrayList<LimitRule>().apply {
+            ruleSet = LimitRuleset(ArrayList<LimitRule>().apply {
                 add(LimitRule(50, 2))
                 add(LimitRule(0, 1))
                 add(LimitRule(800, 6))
@@ -107,7 +107,7 @@ class LimitRulesetTest {
 
     @Test
     fun testLimit_noZero() {
-        val ruleset = LimitRuleset("limit", ArrayList<LimitRule>().apply {
+        val ruleset = LimitRuleset(ArrayList<LimitRule>().apply {
             add(LimitRule(30, 3))
             add(LimitRule(2, 2))
         })
