@@ -98,11 +98,10 @@ spotless {
 dependencyCheck {
     failOnError = true
     outputDirectory = "$buildDir/reports/dependencyCheck"
+    analyzers.assemblyEnabled = false
 
     // https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale
     failBuildOnCVSS = 7.0f
-
-    analyzers.assemblyEnabled = false
 }
 
 tasks {
@@ -129,6 +128,12 @@ tasks {
     named<DependencyUpdatesTask>("dependencyUpdates") {
         group = "verification"
         description = "Checks if dependencies are up-to-date"
+
+        // exclude release candidates, etc
+        rejectVersionIf {
+            candidate.version.matches(Regex(".*-RC\\d?")) ||
+                    candidate.version.matches(Regex(".*-M\\d?"))
+        }
 
         outputDir = "$buildDir/reports/dependencyUpdates"
         reportfileName = "updates"
