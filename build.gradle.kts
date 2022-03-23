@@ -59,12 +59,12 @@ deploy {
         dockerLogin {
             registryRoot = property("registryRoot").toString()
             loginMethod = net.mayope.deployplugin.tasks.DockerLoginMethod.DOCKERHUB
+            loginUsername = property("dockerUser").toString()
+            loginPassword = property("dockerPwd").toString()
         }
         dockerPush {
             registryRoot = property("registryRoot").toString()
             loginMethod = net.mayope.deployplugin.tasks.DockerLoginMethod.DOCKERHUB
-            loginUsername = property("dockerUser").toString()
-            loginPassword = property("dockerPwd").toString()
         }
         deploy {
             targetNamespaces = listOf("integration")
