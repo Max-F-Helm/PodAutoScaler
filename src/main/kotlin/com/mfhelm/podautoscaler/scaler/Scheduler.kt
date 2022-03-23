@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer
 import org.springframework.scheduling.config.ScheduledTaskRegistrar
 import org.springframework.stereotype.Component
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @Component
 internal class Scheduler(
@@ -19,7 +20,7 @@ internal class Scheduler(
         // schedule each scaler
         configLoader.configEntries.forEach {
             val scaler = scalerFactory.newScaler(it)
-            taskRegistrar.addFixedRateTask(scaler, it.interval * 1000)
+            taskRegistrar.addFixedRateTask(scaler, TimeUnit.SECONDS.toMillis(it.interval))
         }
     }
 }

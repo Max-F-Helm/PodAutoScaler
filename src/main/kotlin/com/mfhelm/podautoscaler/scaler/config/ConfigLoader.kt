@@ -8,7 +8,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.dataformat.yaml.JacksonYAMLParseException
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.kotlinModule
-import com.mfhelm.podautoscaler.scaler.config.ruleset.*
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRuleset
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LinearScaleRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LinearScaleRuleset
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LogarithmicScaleRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LogarithmicScaleRuleset
+import com.mfhelm.podautoscaler.scaler.config.ruleset.Ruleset
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
@@ -50,27 +56,33 @@ internal class RulesetDeserializer : StdDeserializer<Ruleset>(Ruleset::class.jav
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Ruleset {
         val fields = p.codec.readTree<ObjectNode>(p)
 
-        when(val typeValue = fields["type"].textValue()){
+        return when(val typeValue = fields["type"].textValue()){
             LimitRuleset.TYPE -> {
                 val rules = p.codec.treeToValue(fields["rules"], Array<LimitRule>::class.java)
                 if(rules.isEmpty()){
-                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain at least one rule of type = '${LimitRuleset.TYPE}'", null)
+                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain at least one rule of type =" +
+                            " '${LimitRuleset.TYPE}'", null)
                 }
-                return LimitRuleset(rules.asList())
+
+                LimitRuleset(rules.asList())
             }
             LinearScaleRuleset.TYPE -> {
                 val rules = p.codec.treeToValue(fields["rules"], Array<LinearScaleRule>::class.java)
                 if(rules.size != 1){
-                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain exactly one element if type = '${LinearScaleRuleset.TYPE}'", null)
+                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain exactly one element if type =" +
+                            " '${LinearScaleRuleset.TYPE}'", null)
                 }
-                return LinearScaleRuleset(rules[0])
+
+                LinearScaleRuleset(rules[0])
             }
             LogarithmicScaleRuleset.TYPE -> {
                 val rules = p.codec.treeToValue(fields["rules"], Array<LogarithmicScaleRule>::class.java)
                 if(rules.size != 1){
-                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain exactly one element if type = '${LinearScaleRuleset.TYPE}'", null)
+                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain exactly one element if type =" +
+                            " '${LinearScaleRuleset.TYPE}'", null)
                 }
-                return LogarithmicScaleRuleset(rules[0])
+
+                LogarithmicScaleRuleset(rules[0])
             }
             else -> throw JacksonYAMLParseException(p, "unsupported ruleset-type: '$typeValue'", null)
         }
@@ -104,21 +116,21 @@ internal class IntervalValueDeserializer : StdDeserializer<Long>(Long::class.jav
      * @throw InvalidConfigException
      */
     private fun parseTimeValue(str: String): Long {
-        when (val unit = str[str.length - 1]) {
+        return when (val unit = str[str.length - 1]) {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
-                return str.toLong()
+                str.toLong()
             }
             's' -> {// for consistency
-                return str.substring(0, str.length - 1).toLong()
+                str.substring(0, str.length - 1).toLong()
             }
             'm' -> {
-                return TimeUnit.MINUTES.toSeconds(str.substring(0, str.length - 1).toLong())
+                TimeUnit.MINUTES.toSeconds(str.substring(0, str.length - 1).toLong())
             }
             'h' -> {
-                return TimeUnit.HOURS.toSeconds(str.substring(0, str.length - 1).toLong())
+                TimeUnit.HOURS.toSeconds(str.substring(0, str.length - 1).toLong())
             }
             'd' -> {
-                return TimeUnit.DAYS.toSeconds(str.substring(0, str.length - 1).toLong())
+                TimeUnit.DAYS.toSeconds(str.substring(0, str.length - 1).toLong())
             }
             else -> throw IllegalArgumentException("invalid unit: $unit")
         }
@@ -152,15 +164,15 @@ internal class CountValueDeserializer : StdDeserializer<Int>(Int::class.java){
      * @throw InvalidConfigException
      */
     private fun parseCountValue(str: String): Int {
-        when (val unit = str[str.length - 1]) {
+        return when (val unit = str[str.length - 1]) {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
-                return str.toInt()
+                str.toInt()
             }
             'k' -> {
-                return (str.substring(0, str.length - 1).toDouble() * 1000).toInt()
+                (str.substring(0, str.length - 1).toDouble() * 1000).toInt()
             }
             'm' -> {
-                return (str.substring(0, str.length - 1).toDouble() * 1000000).toInt()
+                (str.substring(0, str.length - 1).toDouble() * 1000000).toInt()
             }
             else -> throw IllegalArgumentException("invalid unit: $unit")
         }

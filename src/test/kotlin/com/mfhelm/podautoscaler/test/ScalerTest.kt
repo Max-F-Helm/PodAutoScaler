@@ -232,24 +232,15 @@ class ScalerTest {
     }
 
     @Test
-    fun scaleMultiQueue() {
+    fun scaleMultiQueueA() {
         val podCount = slot<Int>()
-        every {
-            kubernetesConnection.setPodCount(
-                multiQueueConfig.deploymentNamespace,
-                multiQueueConfig.deployment,
-                capture(podCount)
-            )
-        }.answers {}
+
         every {
             kubernetesConnection.getPodCount(
                 multiQueueConfig.deploymentNamespace,
                 multiQueueConfig.deployment
             )
         } returns 0
-
-        val scaler = Scaler(queueConnection, kubernetesConnection, multiQueueConfig)
-
         every {
             queueConnection.getQueueMessageCount(
                 multiQueueQueues[0].virtualHost,
@@ -262,11 +253,35 @@ class ScalerTest {
                 multiQueueQueues[1].name
             )
         } returns 200
+
+        val scaler = Scaler(queueConnection, kubernetesConnection, multiQueueConfig)
+
+        every {
+            kubernetesConnection.setPodCount(
+                multiQueueConfig.deploymentNamespace,
+                multiQueueConfig.deployment,
+                capture(podCount)
+            )
+        }.answers {}
+
         scaler.run()
+
         assertTrue(podCount.isCaptured)
         assertEquals(2, podCount.captured)
+    }
 
-        podCount.clear()
+    @Test
+    fun scaleMultiQueueB() {
+        val podCount = slot<Int>()
+
+        val scaler = Scaler(queueConnection, kubernetesConnection, multiQueueConfig)
+
+        every {
+            kubernetesConnection.getPodCount(
+                multiQueueConfig.deploymentNamespace,
+                multiQueueConfig.deployment
+            )
+        } returns 0
         every {
             queueConnection.getQueueMessageCount(
                 multiQueueQueues[0].virtualHost,
@@ -279,11 +294,26 @@ class ScalerTest {
                 multiQueueQueues[1].name
             )
         } returns 5000
+
+        every {
+            kubernetesConnection.setPodCount(
+                multiQueueConfig.deploymentNamespace,
+                multiQueueConfig.deployment,
+                capture(podCount)
+            )
+        }.answers {}
+
         scaler.run()
+
         assertTrue(podCount.isCaptured)
         assertEquals(20, podCount.captured)
+    }
+    @Test
+    fun scaleMultiQueueC() {
+        val podCount = slot<Int>()
 
-        podCount.clear()
+        val scaler = Scaler(queueConnection, kubernetesConnection, multiQueueConfig)
+
         every {
             kubernetesConnection.getPodCount(
                 multiQueueConfig.deploymentNamespace,
@@ -302,7 +332,17 @@ class ScalerTest {
                 multiQueueQueues[1].name
             )
         } returns 500
+
+        every {
+            kubernetesConnection.setPodCount(
+                multiQueueConfig.deploymentNamespace,
+                multiQueueConfig.deployment,
+                capture(podCount)
+            )
+        }.answers {}
+
         scaler.run()
+
         assertTrue(podCount.isCaptured)
         assertEquals(3, podCount.captured)
     }

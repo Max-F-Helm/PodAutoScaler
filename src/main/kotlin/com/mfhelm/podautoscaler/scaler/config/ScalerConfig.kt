@@ -40,6 +40,11 @@ internal class ScalerConfig(
     }
 
     override fun toString(): String {
-        return "ScalerConfig:{label: $label, deploymentNamespace: $deploymentNamespace, deployment: $deployment, interval: $interval, queues: $queues}"
+        return "ScalerConfig:{" +
+                "label: $label, " +
+                "deploymentNamespace: $deploymentNamespace, " +
+                "deployment: $deployment, " +
+                "interval: $interval, " +
+                "queues: $queues}"
     }
 }

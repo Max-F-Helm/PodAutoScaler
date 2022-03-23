@@ -25,7 +25,8 @@ internal class Scaler(
 
             if (newPodCount.count != currentPodCount) {
                 kubernetesConnection.setPodCount(config.deploymentNamespace, config.deployment, newPodCount.count)
-                logger.info("${config.label} scaled from $currentPodCount to $newPodCount (by ${newPodCount.byQueueName} with ${newPodCount.byQueueMessages} messages)")
+                logger.info("${config.label} scaled from $currentPodCount to $newPodCount" +
+                        " (by ${newPodCount.byQueueName} with ${newPodCount.byQueueMessages} messages)")
             }
         } catch (e: Exception) {
             logger.error("exception for ${config.label}", e)
@@ -37,7 +38,9 @@ internal class Scaler(
             val messageCount = messageQueueConnection.getQueueMessageCount(queue.virtualHost, queue.name)
             val computedCount = queue.ruleset.computePodCount(messageCount, currentPodCount)
 
-            logger.trace("${config.label}: computed podCount: $computedCount for messageCount $messageCount of queue ${queue.virtualHost}/${queue.name} with ruleset ${queue.ruleset}")
+            logger.trace("${config.label}: computed podCount: $computedCount" +
+                    " for messageCount $messageCount of queue ${queue.virtualHost}/${queue.name}" +
+                    " with ruleset ${queue.ruleset}")
 
             ComputedPodCount(computedCount, "${queue.virtualHost}/${queue.name}", messageCount)
         }
