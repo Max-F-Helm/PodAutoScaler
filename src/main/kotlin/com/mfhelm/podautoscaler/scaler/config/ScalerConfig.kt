@@ -20,19 +20,19 @@ internal class ScalerConfig(
 
         this.deploymentNamespace = deploymentNamespace
             ?: System.getProperty("NAMESPACE")
-                    ?: throw NoSuchElementException("missing parameter 'deploymentNamespace' and no default is present")
+            ?: throw NoSuchElementException("missing parameter 'deploymentNamespace' and no default is present")
     }
 
     override fun equals(other: Any?): Boolean {
-        if(other !is ScalerConfig){
+        if (other !is ScalerConfig) {
             return false
         }
 
-        return label == other.label
-                && deploymentNamespace == other.deploymentNamespace
-                && deployment == other.deployment
-                && interval == other.interval
-                && queues == other.queues
+        return label == other.label &&
+            deploymentNamespace == other.deploymentNamespace &&
+            deployment == other.deployment &&
+            interval == other.interval &&
+            queues == other.queues
     }
 
     override fun hashCode(): Int {
@@ -41,10 +41,10 @@ internal class ScalerConfig(
 
     override fun toString(): String {
         return "ScalerConfig:{" +
-                "label: $label, " +
-                "deploymentNamespace: $deploymentNamespace, " +
-                "deployment: $deployment, " +
-                "interval: $interval, " +
-                "queues: $queues}"
+            "label: $label, " +
+            "deploymentNamespace: $deploymentNamespace, " +
+            "deployment: $deployment, " +
+            "interval: $interval, " +
+            "queues: $queues}"
     }
 }

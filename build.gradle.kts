@@ -51,8 +51,7 @@ dependencies {
 deploy {
     serviceName = "podautoscaler"
     default {
-        dockerBuild{
-
+        dockerBuild {
         }
         dockerLogin {
             registryRoot = property("registryRoot").toString()
@@ -94,7 +93,7 @@ spotless {
 }
 
 tasks {
-    named<Detekt>("detekt"){
+    named<Detekt>("detekt") {
         jvmTarget = "11"
         parallel = true
         buildUponDefaultConfig = true

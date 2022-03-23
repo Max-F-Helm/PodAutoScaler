@@ -26,7 +26,7 @@ internal class ConfigLoader(
 ) {
 
     final lateinit var configEntries: List<ScalerConfig>
-        protected set// protected for tests
+        protected set // protected for tests
 
     private val deserializer = initDeserializer()
 
@@ -43,7 +43,7 @@ internal class ConfigLoader(
         return deserializer.createParser(src).readValueAs(Array<ScalerConfig>::class.java).asList()
     }
 
-    private fun initDeserializer(): ObjectMapper{
+    private fun initDeserializer(): ObjectMapper {
         return ObjectMapper(YAMLFactory()).apply {
             enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
             registerModule(kotlinModule())
@@ -56,30 +56,42 @@ internal class RulesetDeserializer : StdDeserializer<Ruleset>(Ruleset::class.jav
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Ruleset {
         val fields = p.codec.readTree<ObjectNode>(p)
 
-        return when(val typeValue = fields["type"].textValue()){
+        return when (val typeValue = fields["type"].textValue()) {
             LimitRuleset.TYPE -> {
                 val rules = p.codec.treeToValue(fields["rules"], Array<LimitRule>::class.java)
-                if(rules.isEmpty()){
-                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain at least one rule of type =" +
-                            " '${LimitRuleset.TYPE}'", null)
+                if (rules.isEmpty()) {
+                    throw JacksonYAMLParseException(
+                        p,
+                        "'ruleset.rules' must contain at least one rule of type =" +
+                            " '${LimitRuleset.TYPE}'",
+                        null
+                    )
                 }
 
                 LimitRuleset(rules.asList())
             }
             LinearScaleRuleset.TYPE -> {
                 val rules = p.codec.treeToValue(fields["rules"], Array<LinearScaleRule>::class.java)
-                if(rules.size != 1){
-                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain exactly one element if type =" +
-                            " '${LinearScaleRuleset.TYPE}'", null)
+                if (rules.size != 1) {
+                    throw JacksonYAMLParseException(
+                        p,
+                        "'ruleset.rules' must contain exactly one element if type =" +
+                            " '${LinearScaleRuleset.TYPE}'",
+                        null
+                    )
                 }
 
                 LinearScaleRuleset(rules[0])
             }
             LogarithmicScaleRuleset.TYPE -> {
                 val rules = p.codec.treeToValue(fields["rules"], Array<LogarithmicScaleRule>::class.java)
-                if(rules.size != 1){
-                    throw JacksonYAMLParseException(p, "'ruleset.rules' must contain exactly one element if type =" +
-                            " '${LinearScaleRuleset.TYPE}'", null)
+                if (rules.size != 1) {
+                    throw JacksonYAMLParseException(
+                        p,
+                        "'ruleset.rules' must contain exactly one element if type =" +
+                            " '${LinearScaleRuleset.TYPE}'",
+                        null
+                    )
                 }
 
                 LogarithmicScaleRuleset(rules[0])
@@ -89,22 +101,22 @@ internal class RulesetDeserializer : StdDeserializer<Ruleset>(Ruleset::class.jav
     }
 }
 
-internal class IntervalValueDeserializer : StdDeserializer<Long>(Long::class.java){
+internal class IntervalValueDeserializer : StdDeserializer<Long>(Long::class.java) {
 
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Long {
         val value = p.text
-        if(value === null){
+        if (value === null) {
             throw JacksonYAMLParseException(p, "value must be a string", null)
         }
-        if(value.isEmpty()){
+        if (value.isEmpty()) {
             throw JacksonYAMLParseException(p, "value must not be a valid number (with unit)", null)
         }
 
         try {
             return parseTimeValue(value)
-        }catch (e: NumberFormatException){
+        } catch (e: NumberFormatException) {
             throw JacksonYAMLParseException(p, "value is not a valid number", e)
-        }catch (e: IllegalArgumentException){
+        } catch (e: IllegalArgumentException) {
             throw JacksonYAMLParseException(p, "value has invalid unit", e)
         }
     }
@@ -120,7 +132,7 @@ internal class IntervalValueDeserializer : StdDeserializer<Long>(Long::class.jav
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
                 str.toLong()
             }
-            's' -> {// for consistency
+            's' -> { // for consistency
                 str.substring(0, str.length - 1).toLong()
             }
             'm' -> {
@@ -137,22 +149,22 @@ internal class IntervalValueDeserializer : StdDeserializer<Long>(Long::class.jav
     }
 }
 
-internal class CountValueDeserializer : StdDeserializer<Int>(Int::class.java){
+internal class CountValueDeserializer : StdDeserializer<Int>(Int::class.java) {
 
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Int {
         val value = p.text
-        if(value === null){
+        if (value === null) {
             throw JacksonYAMLParseException(p, "value must be a string", null)
         }
-        if(value.isEmpty()){
+        if (value.isEmpty()) {
             throw JacksonYAMLParseException(p, "value must not be a valid number (with unit)", null)
         }
 
         try {
             return parseCountValue(value)
-        }catch (e: NumberFormatException){
+        } catch (e: NumberFormatException) {
             throw JacksonYAMLParseException(p, "value is not a valid number", e)
-        }catch (e: IllegalArgumentException){
+        } catch (e: IllegalArgumentException) {
             throw JacksonYAMLParseException(p, "value has invalid unit", e)
         }
     }

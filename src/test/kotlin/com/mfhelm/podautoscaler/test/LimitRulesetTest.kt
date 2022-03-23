@@ -2,7 +2,8 @@ package com.mfhelm.podautoscaler.test
 
 import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRule
 import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRuleset
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class LimitRulesetTest {
@@ -13,13 +14,15 @@ class LimitRulesetTest {
         @BeforeAll
         @JvmStatic
         fun init() {
-            ruleSet = LimitRuleset(ArrayList<LimitRule>().apply {
-                add(LimitRule(50, 2))
-                add(LimitRule(0, 1))
-                add(LimitRule(800, 6))
-                add(LimitRule(200, 3))
-                add(LimitRule(400, 4))
-            })
+            ruleSet = LimitRuleset(
+                ArrayList<LimitRule>().apply {
+                    add(LimitRule(50, 2))
+                    add(LimitRule(0, 1))
+                    add(LimitRule(800, 6))
+                    add(LimitRule(200, 3))
+                    add(LimitRule(400, 4))
+                }
+            )
         }
     }
 
@@ -107,10 +110,12 @@ class LimitRulesetTest {
 
     @Test
     fun testLimit_noZero() {
-        val ruleset = LimitRuleset(ArrayList<LimitRule>().apply {
-            add(LimitRule(30, 3))
-            add(LimitRule(2, 2))
-        })
+        val ruleset = LimitRuleset(
+            ArrayList<LimitRule>().apply {
+                add(LimitRule(30, 3))
+                add(LimitRule(2, 2))
+            }
+        )
 
         assertEquals(2, ruleset.computePodCount(0, 9999))
         assertEquals(2, ruleset.computePodCount(1, 9999))

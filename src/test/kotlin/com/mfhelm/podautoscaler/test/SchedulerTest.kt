@@ -20,13 +20,14 @@ class SchedulerTest {
 
     @Autowired
     private lateinit var scalerFactory: ScalerFactory
+
     @Autowired
     private lateinit var configLoader: ConfigLoaderBinding
 
     private val taskRegistrar = mockk<ScheduledTaskRegistrar>(relaxed = true)
 
     private fun readConfig(name: String): String {
-        val res = ConfigLoaderTest::class.java.getResource("${name}.yaml")
+        val res = ConfigLoaderTest::class.java.getResource("$name.yaml")
         if (res === null) {
             throw AssertionError("test-resource $name not found")
         }
@@ -34,7 +35,7 @@ class SchedulerTest {
     }
 
     @Test
-    fun schedulerInit(){
+    fun schedulerInit() {
         configLoader.setConfig(configLoader.loadConfig(readConfig("SchedulerConfig")))
         val scheduler = Scheduler(scalerFactory, configLoader)
 
@@ -52,7 +53,7 @@ class SchedulerTest {
             assertTrue(intervalArg.isCaptured)
 
             val scalerArg = taskArg.captured
-            if(scalerArg !is Scaler) {
+            if (scalerArg !is Scaler) {
                 assertTrue(false, "task-arg is not a Scaler")
             }
 

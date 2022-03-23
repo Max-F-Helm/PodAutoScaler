@@ -3,9 +3,18 @@ package com.mfhelm.podautoscaler.test
 import com.mfhelm.podautoscaler.connection.KubernetesConnection
 import com.mfhelm.podautoscaler.connection.MessageQueueConnection
 import com.mfhelm.podautoscaler.scaler.Scaler
-import com.mfhelm.podautoscaler.scaler.config.*
-import com.mfhelm.podautoscaler.scaler.config.ruleset.*
-import io.mockk.*
+import com.mfhelm.podautoscaler.scaler.config.QueueConfig
+import com.mfhelm.podautoscaler.scaler.config.ScalerConfig
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LimitRuleset
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LinearScaleRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LinearScaleRuleset
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LogarithmicScaleRule
+import com.mfhelm.podautoscaler.scaler.config.ruleset.LogarithmicScaleRuleset
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -22,11 +31,13 @@ class ScalerTest {
         setOf(
             QueueConfig(
                 "VH-A", "Q-A",
-                LimitRuleset(ArrayList<LimitRule>().apply {
-                    add(LimitRule(0, 1))
-                    add(LimitRule(100, 2))
-                    add(LimitRule(200, 3))
-                })
+                LimitRuleset(
+                    ArrayList<LimitRule>().apply {
+                        add(LimitRule(0, 1))
+                        add(LimitRule(100, 2))
+                        add(LimitRule(200, 3))
+                    }
+                )
             )
         )
     )
@@ -54,12 +65,15 @@ class ScalerTest {
     )
 
     private val multiQueueQueues = listOf(
-        QueueConfig("VH-D1", "Q-D1",
-            LimitRuleset(ArrayList<LimitRule>().apply {
-                add(LimitRule(0, 1))
-                add(LimitRule(100, 2))
-                add(LimitRule(200, 3))
-            })
+        QueueConfig(
+            "VH-D1", "Q-D1",
+            LimitRuleset(
+                ArrayList<LimitRule>().apply {
+                    add(LimitRule(0, 1))
+                    add(LimitRule(100, 2))
+                    add(LimitRule(200, 3))
+                }
+            )
         ),
         QueueConfig(
             "VH-D2", "Q-D2",
@@ -308,6 +322,7 @@ class ScalerTest {
         assertTrue(podCount.isCaptured)
         assertEquals(20, podCount.captured)
     }
+
     @Test
     fun scaleMultiQueueC() {
         val podCount = slot<Int>()

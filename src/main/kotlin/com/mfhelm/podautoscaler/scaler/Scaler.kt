@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 internal class Scaler(
     private val messageQueueConnection: MessageQueueConnection,
     private val kubernetesConnection: KubernetesConnection,
-    internal val config: ScalerConfig// internal for tests
+    internal val config: ScalerConfig // internal for tests
 ) : Runnable {
 
     private val logger = getLogger(Scaler::class.java)
@@ -25,8 +25,10 @@ internal class Scaler(
 
             if (newPodCount.count != currentPodCount) {
                 kubernetesConnection.setPodCount(config.deploymentNamespace, config.deployment, newPodCount.count)
-                logger.info("${config.label} scaled from $currentPodCount to $newPodCount" +
-                        " (by ${newPodCount.byQueueName} with ${newPodCount.byQueueMessages} messages)")
+                logger.info(
+                    "${config.label} scaled from $currentPodCount to $newPodCount" +
+                        " (by ${newPodCount.byQueueName} with ${newPodCount.byQueueMessages} messages)"
+                )
             }
         } catch (e: Exception) {
             logger.error("exception for ${config.label}", e)
@@ -38,9 +40,11 @@ internal class Scaler(
             val messageCount = messageQueueConnection.getQueueMessageCount(queue.virtualHost, queue.name)
             val computedCount = queue.ruleset.computePodCount(messageCount, currentPodCount)
 
-            logger.trace("${config.label}: computed podCount: $computedCount" +
+            logger.trace(
+                "${config.label}: computed podCount: $computedCount" +
                     " for messageCount $messageCount of queue ${queue.virtualHost}/${queue.name}" +
-                    " with ruleset ${queue.ruleset}")
+                    " with ruleset ${queue.ruleset}"
+            )
 
             ComputedPodCount(computedCount, "${queue.virtualHost}/${queue.name}", messageCount)
         }
@@ -49,7 +53,8 @@ internal class Scaler(
 
 @Component
 internal class ScalerFactory(
-    private val messageQueueConnection: MessageQueueConnection, private val kubernetesConnection: KubernetesConnection
+    private val messageQueueConnection: MessageQueueConnection,
+    private val kubernetesConnection: KubernetesConnection
 ) {
 
     fun newScaler(config: ScalerConfig): Scaler {
@@ -58,11 +63,12 @@ internal class ScalerFactory(
 }
 
 private data class ComputedPodCount(
-    val count: Int, val byQueueName: String, val byQueueMessages: Int
+    val count: Int,
+    val byQueueName: String,
+    val byQueueMessages: Int
 ) : Comparable<ComputedPodCount> {
 
     override fun compareTo(other: ComputedPodCount): Int {
         return count.compareTo(other.count)
     }
 }
-

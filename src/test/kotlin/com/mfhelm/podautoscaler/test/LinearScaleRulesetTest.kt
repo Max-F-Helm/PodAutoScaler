@@ -2,7 +2,7 @@ package com.mfhelm.podautoscaler.test
 
 import com.mfhelm.podautoscaler.scaler.config.ruleset.LinearScaleRule
 import com.mfhelm.podautoscaler.scaler.config.ruleset.LinearScaleRuleset
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class LinearScaleRulesetTest {
