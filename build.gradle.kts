@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -8,6 +9,9 @@ plugins {
 
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
+
+    id("com.diffplug.spotless") version "6.3.0"
+    id("io.gitlab.arturbosch.detekt") version "1.19.0"
 }
 
 group = "com.mfhelm.podautoscaler"
@@ -71,22 +75,60 @@ deploy {
     }
 }
 
+val ktLintVersion = "0.45.1"
+spotless {
+    kotlin {
+        ktlint(ktLintVersion)
+        target(
+            "src/main/kotlin/**/*.kt",
+            "src/test/kotlin/**/*.kt",
+            "src/main/java/**/*.kt",
+            "src/test/java/**/*.kt"
+        )
+    }
+    kotlinGradle {
+        ktlint(ktLintVersion)
+        targetExclude("build/**")
+        target("build.gradle.kts")
+    }
+}
+
 tasks {
+    named<Detekt>("detekt"){
+        jvmTarget = "11"
+        parallel = true
+        buildUponDefaultConfig = true
+
+        setSource(files(projectDir))
+        include("**/*.kt")
+        include("**/*.kts")
+        exclude("**/resources/**")
+        exclude("**/build/**")
+
+        reports {
+            html.required.set(true)
+            html.outputLocation.set(file("$buildDir/reports/detekt/report.html"))
+            txt.required.set(false)
+            xml.required.set(false)
+            sarif.required.set(false)
+        }
+    }
+
     named<Jar>("jar") {
         enabled = true
         classifier = "thin"
     }
-}
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "11"
+        }
     }
-}
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+    withType<Test> {
+        useJUnitPlatform()
+    }
 }
 
 // injects build infos
