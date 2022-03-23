@@ -14,6 +14,7 @@ plugins {
     id("com.diffplug.spotless") version "6.3.0"
     id("io.gitlab.arturbosch.detekt") version "1.19.0"
     id("com.github.ben-manes.versions") version "0.42.0"
+    id("org.owasp.dependencycheck") version "7.0.1"
 }
 
 group = "com.mfhelm.podautoscaler"
@@ -92,6 +93,16 @@ spotless {
         targetExclude("build/**")
         target("build.gradle.kts")
     }
+}
+
+dependencyCheck {
+    failOnError = true
+    outputDirectory = "$buildDir/reports/dependencyCheck"
+
+    // https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale
+    failBuildOnCVSS = 7.0f
+
+    analyzers.assemblyEnabled = false
 }
 
 tasks {
