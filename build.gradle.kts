@@ -17,8 +17,10 @@ plugins {
     id("org.owasp.dependencycheck") version "7.0.1"
 }
 
+val releaseVersion = "1.0.0"
+
 group = "com.mfhelm.podautoscaler"
-version = "1.0.1-SNAPSHOT"
+version = releaseVersion
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -55,6 +57,7 @@ deploy {
     serviceName = "podautoscaler"
     default {
         dockerBuild {
+            version = if (!releaseVersion.endsWith("SNAPSHOT")) releaseVersion else null
         }
         dockerLogin {
             registryRoot = property("registryRoot").toString()
