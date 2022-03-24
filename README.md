@@ -13,7 +13,7 @@ To deploy this application using helm, you simply write a ``values.yaml`` and us
 image:
   repository: mfhelm/podautoscaler
   pullPolicy: Always
-  version: latest
+  version: 1.0.0-1648124689739
 
 rabbitmqAccessSecret: <name of the secret for RabbitMQ (*1)>
 rabbitmqUser: <username for RabbitMQ-Server>

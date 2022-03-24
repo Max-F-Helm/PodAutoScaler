@@ -4,4 +4,4 @@ description: A Helm chart for the PodAutoScaler
 
 type: application
 
-version: 0.1.0
+version: 1.0.0
