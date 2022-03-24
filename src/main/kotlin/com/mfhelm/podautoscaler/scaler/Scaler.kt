@@ -51,17 +51,6 @@ internal class Scaler(
     }
 }
 
-@Component
-internal class ScalerFactory(
-    private val messageQueueConnection: MessageQueueConnection,
-    private val kubernetesConnection: KubernetesConnection
-) {
-
-    fun newScaler(config: ScalerConfig): Scaler {
-        return Scaler(messageQueueConnection, kubernetesConnection, config)
-    }
-}
-
 private data class ComputedPodCount(
     val count: Int,
     val byQueueName: String,
