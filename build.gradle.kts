@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "com.mfhelm.podautoscaler"
-version = "1.0.0"
+version = "1.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
