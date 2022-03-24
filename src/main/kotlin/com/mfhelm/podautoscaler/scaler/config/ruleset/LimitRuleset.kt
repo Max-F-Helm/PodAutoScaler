@@ -30,42 +30,16 @@ internal class LimitRuleset(rules: List<LimitRule>) : Ruleset {
 
     override fun computePodCount(messageCount: Int, currentPodCount: Int): Int {
         // find rule with largest minMessageCount where minMessageCount >= messageCount
-        // use binary search (just for fun)
-        var newCount = -1
-        var l = 0
-        var r = limits.size
-        while (l <= r) {
-            val mid = (l + r) / 2
-            val limit = limits[mid]
-
-            if (limit.minMessageCount <= messageCount) {
-                if (mid == limits.size - 1) {
-                    newCount = limit.podCount
-                    break
-                }
-                if (mid < limits.size - 1) {
-                    val nextCount = limits[mid + 1].minMessageCount
-                    if (nextCount > messageCount) {
-                        newCount = limit.podCount
-                        break
-                    }
-                }
-            }
-
-            if (limit.minMessageCount > messageCount) {
-                r = mid - 1
-            } else if (limit.minMessageCount < messageCount) {
-                l = mid + 1
-            } else {
-                break
+        for (i in 0 .. limits.size - 2){
+            // because the limits are sorted by minMessageCount use the current item if
+            //  the next minMessageCount is bigger than messageCount
+            if(limits[i + 1].minMessageCount > messageCount) {
+                return limits[i].podCount
             }
         }
 
-        if (newCount == -1) {
-            throw AssertionError("this algorithm is broken")
-        }
-
-        return newCount
+        // use last item for messageCount >= the largest minMessageCount
+        return limits[limits.size - 1].podCount
     }
 
     override fun equals(other: Any?): Boolean {
