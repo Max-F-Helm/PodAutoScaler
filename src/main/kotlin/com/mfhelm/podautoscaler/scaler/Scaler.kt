@@ -5,7 +5,6 @@ import com.mfhelm.podautoscaler.connection.MessageQueueConnection
 import com.mfhelm.podautoscaler.getLogger
 import com.mfhelm.podautoscaler.scaler.config.QueueConfig
 import com.mfhelm.podautoscaler.scaler.config.ScalerConfig
-import org.springframework.stereotype.Component
 
 internal class Scaler(
     private val messageQueueConnection: MessageQueueConnection,

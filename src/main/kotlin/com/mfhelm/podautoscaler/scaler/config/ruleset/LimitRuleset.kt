@@ -30,10 +30,10 @@ internal class LimitRuleset(rules: List<LimitRule>) : Ruleset {
 
     override fun computePodCount(messageCount: Int, currentPodCount: Int): Int {
         // find rule with largest minMessageCount where minMessageCount >= messageCount
-        for (i in 0 .. limits.size - 2){
+        for (i in 0..limits.size - 2) {
             // because the limits are sorted by minMessageCount use the current item if
             //  the next minMessageCount is bigger than messageCount
-            if(limits[i + 1].minMessageCount > messageCount) {
+            if (limits[i + 1].minMessageCount > messageCount) {
                 return limits[i].podCount
             }
         }

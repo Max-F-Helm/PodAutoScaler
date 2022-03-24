@@ -1,6 +1,6 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 plugins {
     id("org.springframework.boot") version "2.6.4"
@@ -132,7 +132,7 @@ tasks {
         // exclude release candidates, etc
         rejectVersionIf {
             candidate.version.matches(Regex(".*-RC\\d?")) ||
-                    candidate.version.matches(Regex(".*-M\\d?"))
+                candidate.version.matches(Regex(".*-M\\d?"))
         }
 
         outputDir = "$buildDir/reports/dependencyUpdates"
