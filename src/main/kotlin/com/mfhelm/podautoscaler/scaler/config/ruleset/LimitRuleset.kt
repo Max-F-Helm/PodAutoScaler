@@ -14,7 +14,6 @@ internal class LimitRuleset(rules: List<LimitRule>) : Ruleset {
 
     init {
         var limits = rules.toTypedArray()
-        // sort rules by limit for binary search in computePodCount
         limits.sortBy {
             it.minMessageCount
         }
@@ -31,14 +30,11 @@ internal class LimitRuleset(rules: List<LimitRule>) : Ruleset {
     override fun computePodCount(messageCount: Int, currentPodCount: Int): Int {
         // find rule with largest minMessageCount where minMessageCount >= messageCount
         for (i in 0..limits.size - 2) {
-            // because the limits are sorted by minMessageCount use the current item if
-            //  the next minMessageCount is bigger than messageCount
             if (limits[i + 1].minMessageCount > messageCount) {
                 return limits[i].podCount
             }
         }
 
-        // use last item for messageCount >= the largest minMessageCount
         return limits[limits.size - 1].podCount
     }
 

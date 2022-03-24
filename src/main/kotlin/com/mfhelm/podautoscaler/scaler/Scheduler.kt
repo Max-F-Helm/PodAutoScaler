@@ -17,7 +17,6 @@ internal class Scheduler(
         val executor = Executors.newScheduledThreadPool(1)
         taskRegistrar.setScheduler(executor)
 
-        // schedule each scaler
         configLoader.configEntries.forEach {
             val scaler = scalerFactory.newScaler(it)
             taskRegistrar.addFixedRateTask(scaler, TimeUnit.SECONDS.toMillis(it.interval))
