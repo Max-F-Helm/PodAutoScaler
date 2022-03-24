@@ -26,7 +26,7 @@ internal class Scaler(
             if (newPodCount.count != currentPodCount) {
                 kubernetesConnection.setPodCount(config.deploymentNamespace, config.deployment, newPodCount.count)
                 logger.info(
-                    "${config.label} scaled from $currentPodCount to $newPodCount" +
+                    "${config.label} scaled from $currentPodCount to ${newPodCount.count}" +
                         " (by ${newPodCount.byQueueName} with ${newPodCount.byQueueMessages} messages)"
                 )
             }
