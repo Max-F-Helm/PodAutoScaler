@@ -3,18 +3,18 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.4"
+    id("org.springframework.boot") version "2.6.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 
     id("net.mayope.deployplugin") version "0.0.51"
 
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
+    kotlin("jvm") version "1.6.20"
+    kotlin("plugin.spring") version "1.6.20"
 
-    id("com.diffplug.spotless") version "6.3.0"
+    id("com.diffplug.spotless") version "6.4.1"
     id("io.gitlab.arturbosch.detekt") version "1.19.0"
     id("com.github.ben-manes.versions") version "0.42.0"
-    id("org.owasp.dependencycheck") version "7.0.1"
+    id("org.owasp.dependencycheck") version "7.0.4.1"
 }
 
 val releaseVersion = "1.0.1-SNAPSHOT"
@@ -45,7 +45,7 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.20")
 
     // Mocking
     testImplementation("io.mockk:mockk:1.12.3")
