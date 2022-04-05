@@ -17,7 +17,7 @@ plugins {
     id("org.owasp.dependencycheck") version "7.0.4.1"
 }
 
-val releaseVersion = "1.0.1-SNAPSHOT"
+val releaseVersion = "1.0.1"
 
 group = "com.mfhelm.podautoscaler"
 version = releaseVersion

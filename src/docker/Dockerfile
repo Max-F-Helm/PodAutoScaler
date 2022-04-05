@@ -1,3 +1,3 @@
 FROM adoptopenjdk/openjdk11:alpine-jre
-COPY "PodAutoScaler-0.0.1-SNAPSHOT.jar" .
-CMD ["java", "-jar", "PodAutoScaler-0.0.1-SNAPSHOT.jar"]
+COPY "PodAutoScaler-1.0.1.jar" "./PodAutoScaler.jar"
+CMD ["java", "-jar", "PodAutoScaler.jar"]
