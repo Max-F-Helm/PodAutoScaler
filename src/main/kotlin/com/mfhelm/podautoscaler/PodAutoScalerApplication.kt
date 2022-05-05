@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 internal class PodAutoScalerApplication
 
+@Suppress("SpreadOperator")
 fun main(args: Array<String>) {
     runApplication<PodAutoScalerApplication>(*args)
 }

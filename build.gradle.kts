@@ -98,6 +98,7 @@ spotless {
     }
 }
 
+@Suppress("MagicNumber")
 dependencyCheck {
     failOnError = true
     outputDirectory = "$buildDir/reports/dependencyCheck"

@@ -14,6 +14,7 @@ internal class Scaler(
 
     private val logger = getLogger(Scaler::class.java)
 
+    @Suppress("TooGenericExceptionCaught")
     override fun run() {
         try {
             val currentPodCount = kubernetesConnection.getPodCount(config.deploymentNamespace, config.deployment)

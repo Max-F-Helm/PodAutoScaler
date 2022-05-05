@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
 
+@Suppress("ProtectedMemberInFinalClass")
 @Component
 internal class ConfigLoader(
     @Value("\${config}") private val configString: String
@@ -30,6 +31,7 @@ internal class ConfigLoader(
 
     private val deserializer = initDeserializer()
 
+    @Suppress("UnusedPrivateMember")
     @PostConstruct
     private fun init() {
         configEntries = loadConfig(configString)
@@ -178,6 +180,7 @@ internal class CountValueDeserializer : StdDeserializer<Int>(Int::class.java) {
      * @param str the input to parse
      * @throw InvalidConfigException
      */
+    @Suppress("MagicNumber")
     private fun parseCountValue(str: String): Int {
         return when (val unit = str[str.length - 1]) {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.mfhelm.podautoscaler.scaler.config.CountValueDeserializer
 import java.util.Objects
 
+@Suppress("SpreadOperator")
 internal class LimitRuleset(rules: List<LimitRule>) : Ruleset {
 
     companion object {
