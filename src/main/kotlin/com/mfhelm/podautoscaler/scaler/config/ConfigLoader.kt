@@ -38,7 +38,7 @@ internal class ConfigLoader(
     // protected for tests
     protected fun loadConfig(src: String): List<ScalerConfig> {
         if (src.isEmpty())
-            return listOf()
+            return emptyList()
 
         return deserializer.createParser(src).readValueAs(Array<ScalerConfig>::class.java).asList()
     }
@@ -57,47 +57,50 @@ internal class RulesetDeserializer : StdDeserializer<Ruleset>(Ruleset::class.jav
         val fields = p.codec.readTree<ObjectNode>(p)
 
         return when (val typeValue = fields["type"].textValue()) {
-            LimitRuleset.TYPE -> {
-                val rules = p.codec.treeToValue(fields["rules"], Array<LimitRule>::class.java)
-                if (rules.isEmpty()) {
-                    throw JacksonYAMLParseException(
-                        p,
-                        "'ruleset.rules' must contain at least one rule of type =" +
-                            " '${LimitRuleset.TYPE}'",
-                        null
-                    )
-                }
-
-                LimitRuleset(rules.asList())
-            }
-            LinearScaleRuleset.TYPE -> {
-                val rules = p.codec.treeToValue(fields["rules"], Array<LinearScaleRule>::class.java)
-                if (rules.size != 1) {
-                    throw JacksonYAMLParseException(
-                        p,
-                        "'ruleset.rules' must contain exactly one element if type =" +
-                            " '${LinearScaleRuleset.TYPE}'",
-                        null
-                    )
-                }
-
-                LinearScaleRuleset(rules[0])
-            }
-            LogarithmicScaleRuleset.TYPE -> {
-                val rules = p.codec.treeToValue(fields["rules"], Array<LogarithmicScaleRule>::class.java)
-                if (rules.size != 1) {
-                    throw JacksonYAMLParseException(
-                        p,
-                        "'ruleset.rules' must contain exactly one element if type =" +
-                            " '${LinearScaleRuleset.TYPE}'",
-                        null
-                    )
-                }
-
-                LogarithmicScaleRuleset(rules[0])
-            }
+            LimitRuleset.TYPE -> readLimitRuleset(fields, p)
+            LinearScaleRuleset.TYPE -> readLinearScaleRuleset(fields, p)
+            LogarithmicScaleRuleset.TYPE -> readLogarithmicScaleRuleset(fields, p)
             else -> throw JacksonYAMLParseException(p, "unsupported ruleset-type: '$typeValue'", null)
         }
+    }
+
+    private fun readLimitRuleset(fields: ObjectNode, p: JsonParser): LimitRuleset {
+        val rules = p.codec.treeToValue(fields["rules"], Array<LimitRule>::class.java)
+        if (rules.isEmpty()) {
+            throw JacksonYAMLParseException(
+                p,
+                "'ruleset.rules' must contain at least one rule of type = '${LimitRuleset.TYPE}'",
+                null
+            )
+        }
+
+        return LimitRuleset(rules.asList())
+    }
+
+    private fun readLinearScaleRuleset(fields: ObjectNode, p: JsonParser): LinearScaleRuleset {
+        val rules = p.codec.treeToValue(fields["rules"], Array<LinearScaleRule>::class.java)
+        if (rules.size != 1) {
+            throw JacksonYAMLParseException(
+                p,
+                "'ruleset.rules' must contain exactly one element if type = '${LinearScaleRuleset.TYPE}'",
+                null
+            )
+        }
+
+        return LinearScaleRuleset(rules[0])
+    }
+
+    private fun readLogarithmicScaleRuleset(fields: ObjectNode, p: JsonParser): LogarithmicScaleRuleset {
+        val rules = p.codec.treeToValue(fields["rules"], Array<LogarithmicScaleRule>::class.java)
+        if (rules.size != 1) {
+            throw JacksonYAMLParseException(
+                p,
+                "'ruleset.rules' must contain exactly one element if type = '${LinearScaleRuleset.TYPE}'",
+                null
+            )
+        }
+
+        return LogarithmicScaleRuleset(rules[0])
     }
 }
 
