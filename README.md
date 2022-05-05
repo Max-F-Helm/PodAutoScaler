@@ -58,17 +58,17 @@ The configuration has the following format:
       virtualHost: "<path to the virtual host for the queue (including leading slash)>; optional (default is '/')"
       name: "<name of the RabbitMQ queue to observe>"
       ruleset:
-          type: "<limit | linearScaling | logScaling; sets the type of the rules>"
+          type: "<limit | linearScale | logScale; sets the type of the rules>"
           rules:
             - # type = limit
               minMessageCount: "<minimum count of messages to trigger this limit>; number | string"
               podCount: "<number of pods to run when this limit is triggered>; number"
-            - # type = linearScaling
+            - # type = linearScale
               factor: "<podCount = factor * messageCount>; number"
               stepThreshold: "<min diff of podCount to trigger update>; number; optional (default is 1)"
               minPodCount: "<lower limit for podCount>; number; optional (default: 1)"
               maxPodCount: "<upper limit for podCount>; number; optional (default: 10)"
-            - # type = logScaling
+            - # type = logScale
               base: "<podCount = log(messageCount, base)>; number"
               stepThreshold: "<min diff of podCount to trigger update>; number; optional (default is 1)"
               minPodCount: "<lower limit for podCount>; number; optional (default: 1)"
