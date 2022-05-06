@@ -3,18 +3,18 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.6"
+    id("org.springframework.boot") version "2.6.7"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 
     id("net.mayope.deployplugin") version "0.0.51"
 
-    kotlin("jvm") version "1.6.20"
-    kotlin("plugin.spring") version "1.6.20"
+    kotlin("jvm") version "1.6.21"
+    kotlin("plugin.spring") version "1.6.21"
 
-    id("com.diffplug.spotless") version "6.4.1"
-    id("io.gitlab.arturbosch.detekt") version "1.19.0"
+    id("com.diffplug.spotless") version "6.5.2"
+    id("io.gitlab.arturbosch.detekt") version "1.20.0"
     id("com.github.ben-manes.versions") version "0.42.0"
-    id("org.owasp.dependencycheck") version "7.0.4.1"
+    id("org.owasp.dependencycheck") version "7.1.0.1"
 }
 
 val releaseVersion = "1.0.2-SNAPSHOT"
@@ -35,7 +35,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
-    implementation("io.fabric8:kubernetes-client:5.12.1")
+    implementation("io.fabric8:kubernetes-client:5.12.2")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2")
 
@@ -45,7 +45,7 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.20")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.21")
 
     // Mocking
     testImplementation("io.mockk:mockk:1.12.3")
@@ -136,7 +136,8 @@ tasks {
         // exclude release candidates, etc
         rejectVersionIf {
             candidate.version.matches(Regex(".*-RC\\d?")) ||
-                candidate.version.matches(Regex(".*-M\\d?"))
+                candidate.version.matches(Regex(".*-M\\d?")) ||
+                candidate.version.matches(Regex(".*-Beta\\d?"))
         }
 
         outputDir = "$buildDir/reports/dependencyUpdates"
