@@ -69,7 +69,8 @@ The configuration has the following format:
               minPodCount: "<lower limit for podCount>; number; optional (default: 1)"
               maxPodCount: "<upper limit for podCount>; number; optional (default: 10)"
             - # type = logScale
-              base: "<podCount = log(messageCount, base)>; number"
+              base: "<podCount = log(messageCount, base) + offset>; number"
+              offset: "<number; optional (default is 0)>"
               stepThreshold: "<min diff of podCount to trigger update>; number; optional (default is 1)"
               minPodCount: "<lower limit for podCount>; number; optional (default: 1)"
               maxPodCount: "<upper limit for podCount>; number; optional (default: 10)"
