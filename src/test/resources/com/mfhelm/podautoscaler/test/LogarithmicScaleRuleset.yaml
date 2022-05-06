@@ -27,3 +27,17 @@
         rules:
           -
             base: 10
+-
+  label: offset
+  deploymentNamespace: NS-C
+  deployment: P-C
+  interval: 60
+  queues:
+    -
+      name: Q-C
+      ruleset:
+        type: logScale
+        rules:
+          -
+            base: 10
+            offset: -2

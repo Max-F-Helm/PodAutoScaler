@@ -164,6 +164,19 @@ class ConfigLoaderTest {
                     )
                 )
             )
+            add(
+                ScalerConfig(
+                    "offset", "NS-C", "P-C", 60,
+                    setOf(
+                        QueueConfig(
+                            "/", "Q-C",
+                            LogarithmicScaleRuleset(
+                                LogarithmicScaleRule(10.0, 1, 1, 10, -2)
+                            )
+                        )
+                    )
+                )
+            )
         }
         assertEquals(expectedConfig, config)
     }
