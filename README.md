@@ -7,8 +7,16 @@ with the scaling-rules.
 
 ### Deployment with Helm
 
-To deploy this application using helm, you simply write a ``values.yaml`` and use the command described below.
+To deploy the application using Helm, you simply write a ``values.yaml`` and add the mayope helm-repository.
+Then you can install it with the second command.
+````shell
+helm repo add mayope https://charts.mayope.net
 
+helm upgrade --install <name of deployment> mayope/podautoscaler -f values.yaml -n <namespace to deploy to>
+````
+
+---
+Content of the ``values.yaml``:
 ````yaml
 image:
   repository: mfhelm/podautoscaler
@@ -34,15 +42,6 @@ It can be written directly in the values.yaml or read from a file by appending
 (in this case you must remove the last two lines).
 
 Optionally tracing of rule-execution can be enabled by setting ``logTrace: true``.
-
----
-To deploy the application, first the mayope helm-repository mus be added.
-Then you can install it with the second command.
-````shell
-helm repo add mayope https://charts.mayope.net
-
-helm upgrade --install <name of deployment> mayope/podautoscaler -f values.yaml -n <namespace to deploy to>
-````
 
 ### Configuration
 
